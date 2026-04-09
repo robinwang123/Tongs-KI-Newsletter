@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tong 的每日 AI 简报</title>
+<style>
+/* ─────────────────────────────────────────
+   Apple Design System
+   ───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+:root {
+  --r-xs:   6px;
+  --r-sm:   10px;
+  --r-md:   14px;
+  --r-lg:   18px;
+  --r-xl:   22px;
+  --r-full: 9999px;
+  --ease:   cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --font:   -apple-system, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+  --font-d: -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+}
+
+/* ── Dark (default) ── */
+[data-theme="dark"] {
+  --bg:         #000000;
+  --bg2:        #1c1c1e;
+  --bg3:        #2c2c2e;
+  --bg4:        #3a3a3c;
+  --glass:      rgba(28,28,30,0.8);
+  --fill1:      rgba(120,120,128,0.36);
+  --fill2:      rgba(120,120,128,0.20);
+  --fill3:      rgba(118,118,128,0.12);
+  --t1:         #ffffff;
+  --t2:         rgba(235,235,245,0.60);
+  --t3:         rgba(235,235,245,0.30);
+  --sep:        rgba(84,84,88,0.55);
+  --accent:     #0a84ff;
+  --accent-h:   #409cff;
+  --accent-bg:  rgba(10,132,255,0.14);
+  --green:      #30d158;
+  --red:        #ff453a;
+  --sh-sm: 0 1px 4px rgba(0,0,0,0.5);
+  --sh-md: 0 4px 20px rgba(0,0,0,0.6);
+  --sh-lg: 0 12px 48px rgba(0,0,0,0.7);
+}
+
+/* ── Light ── */
+[data-theme="light"] {
+  --bg:         #f2f2f7;
+  --bg2:        #ffffff;
+  --bg3:        #f2f2f7;
+  --bg4:        #e5e5ea;
+  --glass:      rgba(255,255,255,0.78);
+  --fill1:      rgba(120,120,128,0.18);
+  --fill2:      rgba(120,120,128,0.10);
+  --fill3:      rgba(118,118,128,0.06);
+  --t1:         #000000;
+  --t2:         rgba(60,60,67,0.60);
+  --t3:         rgba(60,60,67,0.30);
+  --sep:        rgba(60,60,67,0.14);
+  --accent:     #007aff;
+  --accent-h:   #0062cc;
+  --accent-bg:  rgba(0,122,255,0.08);
+  --green:      #34c759;
+  --red:        #ff3b30;
+  --sh-sm: 0 1px 3px rgba(0,0,0,0.08);
+  --sh-md: 0 4px 16px rgba(0,0,0,0.10);
+  --sh-lg: 0 12px 40px rgba(0,0,0,0.13);
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--t1);
+  -webkit-font-smoothing: antialiased;
+  transition: background .3s var(--ease), color .3s var(--ease);
+  min-height: 100vh;
+}
+
+/* ─────────────────────────────────────────
+   Navbar
+   ───────────────────────────────────────── */
+.navbar {
+  position: sticky; top: 0; z-index: 100;
+  height: 52px;
+  backdrop-filter: saturate(180%) blur(24px);
+  -webkit-backdrop-filter: saturate(180%) blur(24px);
+  background: var(--glass);
+  border-bottom: 0.5px solid var(--sep);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px;
+  transition: background .3s var(--ease);
+}
+
+.nav-brand { display: flex; align-items: center; gap: 10px; }
+.nav-icon {
+  width: 30px; height: 30px; border-radius: 8px;
+  background: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; flex-shrink: 0;
+}
+.nav-title {
+  font-family: var(--font-d);
+  font-size: 16px; font-weight: 600;
+  color: var(--t1); letter-spacing: -0.2px;
+}
+.nav-sub { font-size: 11px; color: var(--t3); margin-left: 2px; }
+
+.nav-right { display: flex; align-items: center; gap: 10px; }
+
+/* Theme toggle */
+.theme-toggle {
+  width: 50px; height: 28px;
+  border-radius: var(--r-full);
+  background: var(--fill1);
+  border: none; cursor: pointer;
+  position: relative; display: flex; align-items: center; padding: 2px;
+  transition: background .3s var(--ease);
+}
+.knob {
+  width: 24px; height: 24px; border-radius: var(--r-full);
+  background: var(--bg2);
+  box-shadow: var(--sh-sm);
+  transition: transform .3s var(--spring);
+  display: flex; align-items: center; justify-content: center; font-size: 12px;
+}
+[data-theme="light"] .knob { transform: translateX(22px); }
+
+/* Edition badge */
+.edition-badge {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.04em;
+  padding: 3px 10px; border-radius: var(--r-full);
+  background: var(--accent-bg); color: var(--accent);
+  border: 0.5px solid rgba(10,132,255,0.25);
+}
+[data-theme="light"] .edition-badge { border-color: rgba(0,122,255,0.2); }
+
+/* ─────────────────────────────────────────
+   Page shell
+   ───────────────────────────────────────── */
+.page { max-width: 1060px; margin: 0 auto; padding: 24px 20px 80px; }
+
+/* ─────────────────────────────────────────
+   Hero
+   ───────────────────────────────────────── */
+.hero {
+  text-align: center; margin-bottom: 32px;
+  animation: fadeUp .6s var(--ease) both;
+}
+.hero-eyebrow {
+  font-size: 12px; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 10px;
+}
+.hero-title {
+  font-family: var(--font-d);
+  font-size: clamp(26px,5vw,44px);
+  font-weight: 700; letter-spacing: -0.8px; line-height: 1.1;
+  color: var(--t1); margin-bottom: 10px;
+}
+.hero-sub {
+  font-size: 15px; color: var(--t2); line-height: 1.5;
+  max-width: 420px; margin: 0 auto 10px;
+}
+.hero-credit { font-size: 12px; color: var(--t3); }
+.hero-credit a { color: var(--accent); text-decoration: none; }
+
+/* ─────────────────────────────────────────
+   Language + Date bar
+   ───────────────────────────────────────── */
+.top-bar {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 20px; flex-wrap: wrap; gap: 10px;
+}
+.date-str { font-size: 13px; color: var(--t3); }
+
+.lang-seg {
+  display: flex; background: var(--fill2);
+  border-radius: var(--r-sm); padding: 2px; gap: 2px;
+}
+.lang-btn {
+  flex: none; padding: 6px 14px;
+  border-radius: 8px; font-size: 13px; font-weight: 500;
+  border: none; background: transparent; color: var(--t2);
+  cursor: pointer; transition: all .2s var(--ease);
+  display: flex; align-items: center; gap: 5px;
+}
+.lang-btn.on {
+  background: var(--bg2); color: var(--t1);
+  box-shadow: var(--sh-sm); font-weight: 600;
+}
+
+/* ─────────────────────────────────────────
+   Three column layout
+   ───────────────────────────────────────── */
+.three-col {
+  display: grid;
+  grid-template-columns: 220px 1px 1fr 1px 220px;
+  gap: 0;
+}
+.col { padding: 0 20px; }
+.col:first-child { padding-left: 0; }
+.col:last-child  { padding-right: 0; }
+.col-divider { background: var(--sep); }
+
+/* ─────────────────────────────────────────
+   Section labels
+   ───────────────────────────────────────── */
+.section-label {
+  display: flex; align-items: center; gap: 7px;
+  margin-bottom: 12px;
+}
+.section-label-dot {
+  width: 6px; height: 6px; border-radius: var(--r-full);
+  background: var(--accent); flex-shrink: 0;
+}
+.section-label-text {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--t2);
+}
+
+/* ─────────────────────────────────────────
+   Cards
+   ───────────────────────────────────────── */
+.card {
+  background: var(--bg2);
+  border-radius: var(--r-xl);
+  border: 0.5px solid var(--sep);
+  box-shadow: var(--sh-sm);
+  padding: 18px 20px;
+  margin-bottom: 12px;
+  transition: background .3s var(--ease), border-color .3s;
+}
+
+/* ─────────────────────────────────────────
+   Pills (builders)
+   ───────────────────────────────────────── */
+.pills { display: flex; flex-wrap: wrap; gap: 5px; }
+.pill {
+  font-size: 12px; font-weight: 500;
+  padding: 4px 11px; border-radius: var(--r-full);
+  background: var(--fill2); color: var(--t2);
+  text-decoration: none; border: 0.5px solid transparent;
+  transition: all .15s var(--ease);
+  white-space: nowrap;
+}
+.pill:hover {
+  background: var(--accent-bg); color: var(--accent);
+  border-color: rgba(10,132,255,0.3);
+}
+
+/* ─────────────────────────────────────────
+   Config controls
+   ───────────────────────────────────────── */
+.cfg-row {
+  display: flex; gap: 14px; flex-wrap: wrap;
+  align-items: flex-end; margin-bottom: 20px;
+}
+.cfg-group { flex: 1; min-width: 120px; }
+.cfg-label {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--t3); display: block; margin-bottom: 7px;
+}
+
+/* Segmented depth control */
+.depth-seg {
+  display: flex; background: var(--fill2);
+  border-radius: var(--r-sm); padding: 2px; gap: 2px;
+  min-width: 0; overflow: hidden; width: 100%;
+}
+.depth-btn {
+  flex: 1; min-width: 0;
+  padding: 7px 4px; border-radius: 8px;
+  font-size: 12px; font-weight: 500;
+  border: none; background: transparent; color: var(--t2);
+  cursor: pointer; transition: all .2s var(--ease); text-align: center;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.depth-btn.on {
+  background: var(--bg2); color: var(--t1);
+  box-shadow: var(--sh-sm); font-weight: 600;
+}
+
+/* Input */
+.topic-input {
+  width: 100%; background: var(--fill2);
+  border: 0.5px solid var(--sep);
+  border-radius: var(--r-md);
+  padding: 10px 14px;
+  font-family: var(--font); font-size: 14px;
+  color: var(--t1); outline: none;
+  transition: all .2s var(--ease);
+}
+.topic-input::placeholder { color: var(--t3); }
+.topic-input:focus {
+  border-color: var(--accent); background: var(--bg2);
+  box-shadow: 0 0 0 3px var(--accent-bg);
+}
+
+/* Generate button */
+.gen-btn {
+  width: 100%; padding: 13px 20px;
+  border-radius: var(--r-md); border: none;
+  background: var(--accent); color: #fff;
+  font-family: var(--font); font-size: 15px; font-weight: 600;
+  cursor: pointer; letter-spacing: -0.1px;
+  transition: all .2s var(--ease);
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.gen-btn:hover { background: var(--accent-h); transform: translateY(-1px); box-shadow: var(--sh-md); }
+.gen-btn:active { transform: translateY(0); box-shadow: none; }
+.gen-btn:disabled { opacity: .4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+/* ─────────────────────────────────────────
+   Headlines & body
+   ───────────────────────────────────────── */
+.headline-xl {
+  font-family: var(--font-d);
+  font-size: clamp(20px,3vw,30px);
+  font-weight: 700; letter-spacing: -0.5px; line-height: 1.15;
+  color: var(--t1); margin-bottom: 8px;
+}
+.byline { font-size: 12px; color: var(--t3); margin-bottom: 14px; }
+.body-text { font-size: 14px; line-height: 1.65; color: var(--t2); }
+
+/* Pullquote */
+.pullquote {
+  background: var(--accent-bg);
+  border-left: 2px solid var(--accent);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  padding: 12px 16px; margin: 18px 0;
+}
+.pullquote-text {
+  font-size: 14px; font-style: italic; line-height: 1.5; color: var(--t1);
+}
+
+/* Sidebar headlines */
+.side-head {
+  font-family: var(--font-d);
+  font-size: 15px; font-weight: 600; color: var(--t1);
+  margin-bottom: 5px; margin-top: 14px;
+}
+.side-head:first-of-type { margin-top: 0; }
+
+/* Rule */
+.rule { border: none; border-top: 0.5px solid var(--sep); margin: 16px 0; }
+
+/* ─────────────────────────────────────────
+   Progress steps
+   ───────────────────────────────────────── */
+.prog-item {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13px; color: var(--t3); padding: 5px 0;
+  transition: color .3s;
+}
+.prog-item.active { color: var(--t1); }
+.prog-item.done   { color: var(--green); }
+.prog-dot {
+  width: 20px; height: 20px; border-radius: var(--r-full);
+  background: var(--fill2); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 11px;
+  transition: background .2s;
+}
+.prog-item.active .prog-dot { background: var(--accent-bg); }
+.prog-item.done   .prog-dot { background: rgba(48,209,88,.15); }
+
+/* ─────────────────────────────────────────
+   Output
+   ───────────────────────────────────────── */
+.output-wrap {
+  display: none;
+  background: var(--bg2); border-radius: var(--r-xl);
+  border: 0.5px solid var(--sep); box-shadow: var(--sh-md);
+  overflow: hidden; margin-top: 20px;
+  animation: fadeUp .5s var(--ease) both;
+}
+.output-bar {
+  background: var(--fill3); padding: 11px 18px;
+  border-bottom: 0.5px solid var(--sep);
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 12px; color: var(--t3);
+}
+.output-bar-left { display: flex; align-items: center; gap: 8px; }
+.live-dot {
+  width: 8px; height: 8px; border-radius: var(--r-full);
+  background: var(--green); animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+.output-label { font-size: 13px; font-weight: 600; color: var(--t1); }
+.output-body {
+  padding: 24px; font-size: 14px; line-height: 1.78; color: var(--t1);
+}
+.output-body h1,.output-body h2 {
+  font-family: var(--font-d); font-weight: 700; letter-spacing: -0.3px;
+  color: var(--t1); margin: 22px 0 8px;
+}
+.output-body h1 { font-size: 22px; }
+.output-body h2 { font-size: 17px; }
+.output-body h3 {
+  font-size: 11px; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--t3); margin: 18px 0 5px;
+}
+.output-body p  { margin-bottom: 12px; }
+.output-body a  {
+  color: var(--accent); text-decoration: none;
+  border-bottom: 0.5px solid var(--accent);
+  transition: opacity .15s;
+}
+.output-body a:hover { opacity: .65; }
+.output-body strong { font-weight: 600; color: var(--t1); }
+.output-body hr { border: none; border-top: 0.5px solid var(--sep); margin: 18px 0; }
+.output-body ul { padding-left: 18px; margin-bottom: 12px; }
+.output-body li { margin-bottom: 5px; }
+
+/* ─────────────────────────────────────────
+   Error
+   ───────────────────────────────────────── */
+.err-notice {
+  display: none;
+  background: rgba(255,69,58,.1); border: 0.5px solid rgba(255,69,58,.3);
+  border-radius: var(--r-md); padding: 12px 16px;
+  font-size: 13px; color: var(--red); margin-top: 10px;
+}
+
+/* ─────────────────────────────────────────
+   Footer
+   ───────────────────────────────────────── */
+.footer {
+  border-top: 0.5px solid var(--sep);
+  margin-top: 48px; padding-top: 20px;
+  display: flex; justify-content: space-between;
+  font-size: 12px; color: var(--t3);
+  flex-wrap: wrap; gap: 6px;
+}
+.footer a { color: var(--t3); text-decoration: none; }
+.footer a:hover { color: var(--accent); }
+
+/* ─────────────────────────────────────────
+   Animations
+   ───────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(14px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* ─────────────────────────────────────────
+   Responsive
+   ───────────────────────────────────────── */
+@media(max-width:720px){
+  .three-col { grid-template-columns:1fr; }
+  .col-divider { display:none; }
+  .col { padding:0; margin-bottom:24px; }
+  .page { padding:16px 16px 60px; }
+}
+</style>
+</head>
+<body data-theme="dark">
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="nav-brand">
+    <div class="nav-icon">🔭</div>
+    <div>
+      <div class="nav-title">Tong's Daily AI Newsletter</div>
+    </div>
+  </div>
+  <div class="nav-right">
+    <span class="edition-badge" id="edition-label">中文版</span>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="切换主题">
+      <div class="knob" id="knob">🌙</div>
+    </button>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-eyebrow">AI Builder Intelligence</div>
+    <h1 class="hero-title" id="hero-title">Tong's Daily<br>AI Newsletter</h1>
+    <p class="hero-sub" id="edition-desc">每日 AI Builder 精选简报 · 过滤噪音，只看信号</p>
+    <div class="hero-credit">
+      灵感来源 <a href="https://github.com/zarazhangrui/follow-builders" target="_blank">zarazhangrui/follow-builders</a> by Zara Zhang
+    </div>
+  </div>
+
+  <!-- Top bar: date + language -->
+  <div class="top-bar">
+    <span class="date-str" id="date-line"></span>
+    <div class="lang-seg">
+      <button class="lang-btn on" onclick="setLang(this,'zh')">🇨🇳 中文</button>
+      <button class="lang-btn" onclick="setLang(this,'en')">🇬🇧 English</button>
+      <button class="lang-btn" onclick="setLang(this,'de')">🇩🇪 Deutsch</button>
+    </div>
+  </div>
+
+  <!-- Three columns -->
+  <div class="three-col">
+
+    <!-- LEFT -->
+    <div class="col">
+      <div class="section-label">
+        <div class="section-label-dot"></div>
+        <span class="section-label-text" id="lbl-builders">追踪的 Builders</span>
+      </div>
+      <div class="pills">
+        <a class="pill" href="https://x.com/karpathy" target="_blank">Andrej Karpathy</a>
+        <a class="pill" href="https://x.com/sama" target="_blank">Sam Altman</a>
+        <a class="pill" href="https://x.com/AmandaAskell" target="_blank">Amanda Askell</a>
+        <a class="pill" href="https://x.com/alexalbert__" target="_blank">Alex Albert</a>
+        <a class="pill" href="https://x.com/amasad" target="_blank">Amjad Masad</a>
+        <a class="pill" href="https://x.com/rauchg" target="_blank">Guillermo Rauch</a>
+        <a class="pill" href="https://x.com/swyx" target="_blank">Swyx</a>
+        <a class="pill" href="https://x.com/danshipper" target="_blank">Dan Shipper</a>
+        <a class="pill" href="https://x.com/HamelHusain" target="_blank">Hamel Husain</a>
+        <a class="pill" href="https://x.com/garrytan" target="_blank">Garry Tan</a>
+        <a class="pill" href="https://x.com/mattturck" target="_blank">Matt Turck</a>
+        <a class="pill" href="https://x.com/kevinweil" target="_blank">Kevin Weil</a>
+        <a class="pill" href="https://x.com/petergyang" target="_blank">Peter Yang</a>
+        <a class="pill" href="https://x.com/levie" target="_blank">Aaron Levie</a>
+        <a class="pill" href="https://x.com/zarazhangrui" target="_blank">Zara Zhang</a>
+        <a class="pill" href="https://x.com/steipete" target="_blank">Peter Steinberger</a>
+        <a class="pill" href="https://x.com/mckaywrigley" target="_blank">Mckay Wrigley</a>
+        <a class="pill" href="https://x.com/lulumeservey" target="_blank">Lulu Meservey</a>
+        <a class="pill" href="https://x.com/venturetwins" target="_blank">Justine Moore</a>
+        <a class="pill" href="https://x.com/ryolu_" target="_blank">Ryo Lu</a>
+        <a class="pill" href="https://x.com/nikunj" target="_blank">Nikunj Kothari</a>
+        <a class="pill" href="https://x.com/PJaccetturo" target="_blank">PJ Ace</a>
+        <a class="pill" href="https://x.com/adityaag" target="_blank">Aditya Agarwal</a>
+        <a class="pill" href="https://x.com/trq212" target="_blank">Thariq</a>
+      </div>
+
+      <div class="rule"></div>
+      <div class="section-label">
+        <div class="section-label-dot" style="background:var(--green)"></div>
+        <span class="section-label-text" id="lbl-podcasts">播客信源</span>
+      </div>
+      <div class="pills">
+        <a class="pill" href="https://www.youtube.com/@LatentSpacePod" target="_blank">Latent Space</a>
+        <a class="pill" href="https://www.youtube.com/@NoPriorsPodcast" target="_blank">No Priors</a>
+        <a class="pill" href="https://www.youtube.com/@LennysPodcast" target="_blank">Lenny's Podcast</a>
+        <a class="pill" href="https://www.youtube.com/playlist?list=PLOhHNjZItNnMm5tdW61JpnyxeYH5NDDx8" target="_blank">Training Data</a>
+        <a class="pill" href="https://www.youtube.com/@RedpointAI" target="_blank">Unsupervised Learning</a>
+      </div>
+
+      <div class="rule"></div>
+      <div class="section-label">
+        <div class="section-label-dot" style="background:var(--t3)"></div>
+        <span class="section-label-text" id="lbl-phil">设计理念</span>
+      </div>
+      <div class="body-text" style="font-size:13px">
+        <p style="margin-bottom:8px" id="phil-p1">追踪真正在构建产品的人——研究员、创始人、工程师——而非转述信息的网红。</p>
+        <p style="margin-bottom:8px" id="phil-p2">每条信息附有原始信源超链接。Signal vs. Noise 板块主动过滤营销噪音。</p>
+        <p id="phil-p3">原始 Skill 由 <a href="https://github.com/zarazhangrui/follow-builders" target="_blank" style="color:var(--accent);text-decoration:none">Zara Zhang</a> 创作，GitHub 2k+ Stars。</p>
+      </div>
+    </div>
+
+    <div class="col-divider"></div>
+
+    <!-- CENTER -->
+    <div class="col">
+
+      <!-- Config -->
+      <div class="card">
+        <div class="cfg-row">
+          <div class="cfg-group">
+            <span class="cfg-label" id="lbl-depth">深度</span>
+            <div class="depth-seg">
+              <button class="depth-btn on" onclick="setDepth(this,'标准')" id="d1">标准</button>
+              <button class="depth-btn" onclick="setDepth(this,'深度')" id="d2">深度</button>
+              <button class="depth-btn" onclick="setDepth(this,'精简')" id="d3">精简</button>
+            </div>
+          </div>
+          <div class="cfg-group" style="flex:2">
+            <span class="cfg-label" id="lbl-topic">聚焦话题</span>
+            <input class="topic-input" id="topic" placeholder="如 agents、MCP、inference…（可选）"/>
+          </div>
+        </div>
+        <button class="gen-btn" id="btn" onclick="go()">
+          <span>🔭</span><span id="btn-text">生成今日 Builder 简报</span>
+        </button>
+        <div class="err-notice" id="err"></div>
+      </div>
+
+      <!-- Hero content -->
+      <div class="section-label" style="margin-top:4px">
+        <div class="section-label-dot"></div>
+        <span class="section-label-text" id="lbl-main">今日头条</span>
+      </div>
+      <div class="headline-xl" id="main-head">每日追踪全球顶级 AI Builders 的第一手观点</div>
+      <div class="byline" id="main-byline">由 Claude AI 实时生成 · 灵感来自 zarazhangrui/follow-builders</div>
+      <div class="body-text" id="main-body">
+        点击上方按钮，Claude 将追踪 Andrej Karpathy、Sam Altman、Anthropic 工程师等 32 位顶级 Builder 的最新动态，结合 Latent Space 等硬核播客，为你生成一份过滤了营销噪音的精华简报。每条信息均附有原始信源超链接。
+      </div>
+
+      <div class="pullquote">
+        <div class="pullquote-text" id="pullquote">"Follow people who build products and have original opinions, not influencers who regurgitate."</div>
+      </div>
+
+      <!-- Progress -->
+      <div id="progress-area" style="display:none;margin-top:12px">
+        <div id="prog-list"></div>
+      </div>
+
+      <!-- Output -->
+      <div class="output-wrap" id="output-area">
+        <div class="output-bar">
+          <div class="output-bar-left">
+            <div class="live-dot"></div>
+            <span class="output-label" id="out-label">简报已生成</span>
+          </div>
+          <span id="out-meta">Claude · Follow Builders</span>
+        </div>
+        <div class="output-body" id="output-body"></div>
+      </div>
+    </div>
+
+    <div class="col-divider"></div>
+
+    <!-- RIGHT -->
+    <div class="col">
+      <div class="section-label">
+        <div class="section-label-dot" style="background:var(--t3)"></div>
+        <span class="section-label-text" id="lbl-what">这是什么</span>
+      </div>
+
+      <div class="side-head" id="side-h1">追踪创造者</div>
+      <div class="body-text" style="font-size:13px;margin-bottom:14px" id="side-b1">
+        AI 领域每天产生大量内容，其中 90% 是对已有观点的转述。这份简报只追踪源头——那些真正在构建、在研究、有第一手判断的人。
+      </div>
+
+      <div class="rule"></div>
+      <div class="side-head" id="side-h2">三语输出</div>
+      <div class="body-text" style="font-size:13px;margin-bottom:14px" id="side-b2">
+        支持中文、英文、德文输出。深奥技术内容转化为地道的目标语言表达，而非机械翻译。
+      </div>
+
+      <div class="rule"></div>
+      <div class="side-head" id="side-h3">Signal vs. Noise</div>
+      <div class="body-text" style="font-size:13px;margin-bottom:14px" id="side-b3">
+        每份简报包含专项板块，明确区分本周的真实进展与炒作噪音，帮助你建立独立判断。
+      </div>
+
+      <div class="rule"></div>
+      <div class="side-head" id="side-h4">信源超链接</div>
+      <div class="body-text" style="font-size:13px" id="side-b4">
+        简报正文中每位 Builder、每个播客均附有可点击的原始链接，直达第一手内容。
+      </div>
+    </div>
+
+  </div><!-- /.three-col -->
+
+  <div class="footer">
+    <span>Builder 名单策划：<a href="https://github.com/zarazhangrui/follow-builders" target="_blank">zarazhangrui/follow-builders</a> by Zara Zhang</span>
+    <span>由 <a href="https://anthropic.com" target="_blank">Claude AI</a> 实时生成 · MIT License</span>
+  </div>
+
+</div><!-- /.page -->
+
+<script>
+// ── Date ──
+const today = new Date();
+document.getElementById('date-line').textContent =
+  today.toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+
+// ── Theme ──
+const saved = localStorage.getItem('fb-theme') || 'dark';
+document.body.setAttribute('data-theme', saved);
+document.getElementById('knob').textContent = saved === 'dark' ? '🌙' : '☀️';
+
+function toggleTheme() {
+  const isDark = document.body.getAttribute('data-theme') === 'dark';
+  const next = isDark ? 'light' : 'dark';
+  document.body.setAttribute('data-theme', next);
+  document.getElementById('knob').textContent = next === 'dark' ? '🌙' : '☀️';
+  localStorage.setItem('fb-theme', next);
+}
+
+// ── i18n ──
+const T = {
+  zh: {
+    editionLabel:'中文版', utilDesc:'AI Builder Intelligence',
+    editionDesc:'每日 AI Builder 精选简报 · 过滤噪音，只看信号',
+    heroTitle:'Tong 的每日<br>AI 简报',
+    lbl_builders:'追踪的 Builders', lbl_podcasts:'播客信源', lbl_phil:'设计理念',
+    lbl_depth:'深度', lbl_topic:'聚焦话题', lbl_main:'今日头条', lbl_what:'这是什么',
+    mainHead:'每日追踪全球顶级 AI Builders 的第一手观点',
+    mainByline:'由 Claude AI 实时生成 · 灵感来自 zarazhangrui/follow-builders',
+    mainBody:'点击上方按钮，Claude 将追踪 Andrej Karpathy、Sam Altman、Anthropic 工程师等 32 位顶级 Builder 的最新动态，结合 Latent Space 等硬核播客，为你生成一份过滤了营销噪音的精华简报。每条信息均附有原始信源超链接。',
+    placeholder:'如 agents、MCP、inference…（可选）',
+    btn:'生成今日 Builder 简报',
+    pullquote:'"Follow people who build products and have original opinions, not influencers who regurgitate."',
+    d1:'标准', d2:'深度', d3:'精简',
+    phil_p1:'追踪真正在构建产品的人——研究员、创始人、工程师——而非转述信息的网红。',
+    phil_p2:'每条信息附有原始信源超链接。Signal vs. Noise 板块主动过滤营销噪音。',
+    phil_p3:'原始 Skill 由 Zara Zhang 创作，GitHub 2k+ Stars。',
+    side_h1:'追踪创造者', side_b1:'AI 领域每天产生大量内容，其中 90% 是对已有观点的转述。这份简报只追踪源头——那些真正在构建、在研究、有第一手判断的人。',
+    side_h2:'三语输出',   side_b2:'支持中文、英文、德文输出。深奥技术内容转化为地道的目标语言表达，而非机械翻译。',
+    side_h3:'Signal vs. Noise', side_b3:'每份简报包含专项板块，明确区分本周的真实进展与炒作噪音，帮助你建立独立判断。',
+    side_h4:'信源超链接', side_b4:'简报正文中每位 Builder、每个播客均附有可点击的原始链接，直达第一手内容。',
+    generated:'简报已生成',
+    steps:['连接 Claude API…','分析 Builder 动态…','扫描 X/Twitter 洞察…','提取播客精华…','过滤噪音，提炼信号…','生成简报…'],
+  },
+  en: {
+    editionLabel:'English Ed.', utilDesc:'AI Builder Intelligence',
+    editionDesc:'Daily AI builder digest · Filter noise, surface signal',
+    heroTitle:"Tong's Daily<br>AI Newsletter",
+    lbl_builders:'Tracked Builders', lbl_podcasts:'Podcast Sources', lbl_phil:'Philosophy',
+    lbl_depth:'Depth', lbl_topic:'Focus topic', lbl_main:'Lead Story', lbl_what:'About',
+    mainHead:"First-hand insights from the world's top AI builders, daily",
+    mainByline:'Generated by Claude AI · Inspired by zarazhangrui/follow-builders',
+    mainBody:'Click above. Claude will track the latest from Andrej Karpathy, Sam Altman, Anthropic engineers, and 32 curated builders — combined with Latent Space and top podcasts — into a noise-filtered digest. Every insight includes a source link.',
+    placeholder:'e.g. agents, MCP, inference… (optional)',
+    btn:'Generate Builder Digest',
+    pullquote:'"Follow people who build products and have original opinions, not influencers who regurgitate."',
+    d1:'Standard', d2:'Deep Dive', d3:'Brief',
+    phil_p1:'Track people who actually build — researchers, founders, engineers — not influencers who regurgitate.',
+    phil_p2:'Every insight includes a source link. The Signal vs. Noise section actively filters out marketing hype.',
+    phil_p3:'Original Skill by Zara Zhang, 2k+ GitHub stars.',
+    side_h1:'Follow builders',   side_b1:'90% of AI content is recycled takes. This digest tracks the source — those who are actually building, researching, and forming first-hand opinions.',
+    side_h2:'Three languages',   side_b2:'Output in Chinese, English, or German. Technical depth is preserved, not lost in translation.',
+    side_h3:'Signal vs. Noise',  side_b3:'Every digest includes a dedicated section separating real developments from hype, helping you form independent judgment.',
+    side_h4:'Source links',      side_b4:'Every builder and podcast mentioned in the digest includes a clickable link to the original source.',
+    generated:'Digest ready',
+    steps:['Connecting to Claude API…','Analyzing builder activity…','Scanning X/Twitter insights…','Extracting podcast highlights…','Filtering noise, surfacing signal…','Generating digest…'],
+  },
+  de: {
+    editionLabel:'Deutsche Ausgabe', utilDesc:'KI-Builder-Intelligenz',
+    editionDesc:'Tägliche KI-Builder-Zusammenfassung · Rauschen filtern, Signal finden',
+    heroTitle:'Tongs täglicher<br>KI-Newsletter',
+    lbl_builders:'Verfolgte Builder', lbl_podcasts:'Podcast-Quellen', lbl_phil:'Philosophie',
+    lbl_depth:'Tiefe', lbl_topic:'Thema', lbl_main:'Aufmacher', lbl_what:'Was ist das',
+    mainHead:'Ersthand-Einblicke von den führenden KI-Entwicklern, täglich',
+    mainByline:'Generiert von Claude AI · Inspiriert von zarazhangrui/follow-builders',
+    mainBody:'Klicken Sie oben. Claude verfolgt die neuesten Beiträge von Andrej Karpathy, Sam Altman und 32 kuratierten Buildern zu einem rauschgefilterten Digest. Jede Erkenntnis enthält einen Quellenlink.',
+    placeholder:'z.B. Agents, MCP, Inferenz… (optional)',
+    btn:'Builder-Digest generieren',
+    pullquote:'"Folge denen, die bauen und eigene Meinungen haben, nicht Influencern, die nur wiederholen."',
+    d1:'Standard', d2:'Tiefgang', d3:'Kurz',
+    phil_p1:'Verfolge Menschen, die wirklich bauen — Forscher, Gründer, Ingenieure — keine Influencer.',
+    phil_p2:'Jede Erkenntnis enthält einen Quellenlink. Signal vs. Rauschen filtert Marketing-Hype heraus.',
+    phil_p3:'Ursprüngliches Skill von Zara Zhang, 2k+ GitHub-Sterne.',
+    side_h1:'Den Machern folgen', side_b1:'90 % der KI-Inhalte sind recycelte Meinungen. Dieser Digest verfolgt die Quelle — jene, die wirklich bauen und forschen.',
+    side_h2:'Drei Sprachen',     side_b2:'Ausgabe auf Chinesisch, Englisch oder Deutsch. Technische Tiefe bleibt erhalten.',
+    side_h3:'Signal vs. Rauschen', side_b3:'Jeder Digest trennt echte Entwicklungen von Hype und hilft Ihnen, ein unabhängiges Urteil zu bilden.',
+    side_h4:'Quellenlinks',      side_b4:'Jeder Builder und Podcast enthält einen klickbaren Link zur ursprünglichen Quelle.',
+    generated:'Digest bereit',
+    steps:['Claude API verbinden…','Builder-Aktivität analysieren…','X/Twitter scannen…','Podcast-Highlights extrahieren…','Rauschen filtern…','Digest generieren…'],
+  }
+};
+
+let lang = 'zh', depth = '标准';
+
+function setLang(el, l) {
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('on'));
+  el.classList.add('on');
+  lang = l;
+  const t = T[l];
+  document.getElementById('edition-label').textContent = t.editionLabel;
+  document.getElementById('edition-desc').textContent = t.editionDesc;
+  document.getElementById('hero-title').innerHTML = t.heroTitle;
+  document.getElementById('lbl-builders').textContent = t.lbl_builders;
+  document.getElementById('lbl-podcasts').textContent = t.lbl_podcasts;
+  document.getElementById('lbl-phil').textContent = t.lbl_phil;
+  document.getElementById('lbl-depth').textContent = t.lbl_depth;
+  document.getElementById('lbl-topic').textContent = t.lbl_topic;
+  document.getElementById('lbl-main').textContent = t.lbl_main;
+  document.getElementById('lbl-what').textContent = t.lbl_what;
+  document.getElementById('main-head').textContent = t.mainHead;
+  document.getElementById('main-byline').textContent = t.mainByline;
+  document.getElementById('main-body').textContent = t.mainBody;
+  document.getElementById('topic').placeholder = t.placeholder;
+  document.getElementById('btn-text').textContent = t.btn;
+  document.getElementById('pullquote').textContent = t.pullquote;
+  document.getElementById('d1').textContent = t.d1;
+  document.getElementById('d2').textContent = t.d2;
+  document.getElementById('d3').textContent = t.d3;
+  document.getElementById('side-h1').textContent = t.side_h1;
+  document.getElementById('side-b1').textContent = t.side_b1;
+  document.getElementById('side-h2').textContent = t.side_h2;
+  document.getElementById('side-b2').textContent = t.side_b2;
+  document.getElementById('side-h3').textContent = t.side_h3;
+  document.getElementById('side-b3').textContent = t.side_b3;
+  document.getElementById('side-h4').textContent = t.side_h4;
+  document.getElementById('side-b4').textContent = t.side_b4;
+  document.getElementById('phil-p1').textContent = t.phil_p1;
+  document.getElementById('phil-p2').textContent = t.phil_p2;
+  document.getElementById('phil-p3').textContent = t.phil_p3;
+  document.documentElement.lang = l;
+  const outArea = document.getElementById('output-area');
+  if (outArea.style.display !== 'none') go();
+}
+
+function setDepth(el, d) {
+  document.querySelectorAll('.depth-btn').forEach(b => b.classList.remove('on'));
+  el.classList.add('on');
+  depth = d;
+}
+
+function md(text) {
+  return text
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/^### (.+)$/gm,'<h3>$1</h3>')
+    .replace(/^## (.+)$/gm,'<h2>$1</h2>')
+    .replace(/^# (.+)$/gm,'<h1>$1</h1>')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>')
+    .replace(/^---$/gm,'<hr>')
+    .replace(/^[\*\-] (.+)$/gm,'<li>$1</li>')
+    .replace(/(<li>[\s\S]*?<\/li>\n?)+/g,'<ul>$&</ul>')
+    .split('\n\n').map(p => {
+      p = p.trim(); if (!p) return '';
+      if (/^<(h[1-3]|ul|ol|hr)/.test(p)) return p;
+      return '<p>' + p.replace(/\n/g,'<br>') + '</p>';
+    }).join('\n');
+}
+
+async function go() {
+  const btn = document.getElementById('btn');
+  const progArea = document.getElementById('progress-area');
+  const progList = document.getElementById('prog-list');
+  const outArea = document.getElementById('output-area');
+  const errEl = document.getElementById('err');
+  const mainBody = document.getElementById('main-body');
+  const topic = document.getElementById('topic').value.trim();
+  const t = T[lang];
+
+  btn.disabled = true;
+  document.getElementById('btn-text').textContent = '…';
+  progArea.style.display = 'block';
+  outArea.style.display = 'none';
+  errEl.style.display = 'none';
+  progList.innerHTML = '';
+  mainBody.style.opacity = '0.35';
+
+  for (let i = 0; i < t.steps.length; i++) {
+    await new Promise(r => setTimeout(r, i === 0 ? 60 : 580));
+    const row = document.createElement('div');
+    row.className = 'prog-item active';
+    row.innerHTML = `<div class="prog-dot">⏳</div><span>${t.steps[i]}</span>`;
+    progList.appendChild(row);
+    if (i > 0) {
+      const prev = progList.children[i-1];
+      prev.className = 'prog-item done';
+      prev.querySelector('.prog-dot').textContent = '✓';
+    }
+  }
+
+  try {
+    const res = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ lang, depth, topic })
+    });
+    const data = await res.json();
+    progList.lastChild.className = 'prog-item done';
+    progList.lastChild.querySelector('.prog-dot').textContent = '✓';
+    progArea.style.display = 'none';
+    mainBody.style.opacity = '1';
+
+    if (data.error) {
+      errEl.textContent = 'Error: ' + data.error;
+      errEl.style.display = 'block';
+    } else {
+      document.getElementById('out-label').textContent = t.generated;
+      document.getElementById('out-meta').textContent = `Claude · ${new Date().toLocaleDateString()}`;
+      document.getElementById('output-body').innerHTML = md(data.result);
+      outArea.style.display = 'block';
+      outArea.scrollIntoView({ behavior:'smooth', block:'start' });
+    }
+  } catch (e) {
+    progArea.style.display = 'none';
+    mainBody.style.opacity = '1';
+    errEl.textContent = 'Network error: ' + e.message;
+    errEl.style.display = 'block';
+  }
+
+  btn.disabled = false;
+  document.getElementById('btn-text').textContent = T[lang].btn;
+}
+</script>
+</body>
+</html>
