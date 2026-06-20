@@ -793,8 +793,7 @@ function setLang(el, l) {
   document.getElementById('phil-p2').textContent = t.phil_p2;
   document.getElementById('phil-p3').textContent = t.phil_p3;
   document.documentElement.lang = l;
-  const outArea = document.getElementById('output-area');
-  if (outArea.style.display !== 'none') go();
+  // 切换语言只更新界面文字，不自动重新生成简报（需手动点击生成按钮）
 }
 
 function setDepth(el, d) {
