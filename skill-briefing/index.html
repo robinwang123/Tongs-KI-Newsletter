@@ -1,478 +1,189 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tongs KI-Newsletter</title>
+<title>Tongs KI Newsletter</title>
 <style>
-/* ─────────────────────────────────────────
-   Apple Design System
-   ───────────────────────────────────────── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+:root{
+  --r-sm:8px;--r-md:12px;--r-lg:16px;--r-xl:20px;--r-full:9999px;
+  --font:'Inter','Helvetica Neue',Helvetica,Arial,sans-serif;
+  --font-d:'Inter','Helvetica Neue',Helvetica,Arial,sans-serif;
+  --font-zh:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;
+  --mono:'JetBrains Mono','SF Mono',Menlo,monospace;
+  --ease:cubic-bezier(.25,.46,.45,.94);
+  --spring:cubic-bezier(.34,1.56,.64,1);
+}
+[data-theme="dark"]{
+  --bg:#05080f;--bg2:#0d1420;--bg3:#131d2e;
+  --glass:rgba(13,20,32,.85);
+  --fill1:rgba(100,120,160,.28);--fill2:rgba(100,120,160,.14);--fill3:rgba(100,120,160,.07);
+  --t1:#e8ecf4;--t2:rgba(200,210,230,.62);--t3:rgba(180,195,220,.32);
+  --sep:rgba(80,110,160,.28);
+  --accent:#2d7dd2;--accent-h:#4a94e8;--accent-bg:rgba(45,125,210,.14);
+  --gold:#c9a84c;--gold-bg:rgba(201,168,76,.12);
+  --green:#2ecc71;--green-bg:rgba(46,204,113,.12);
+  --red:#e74c3c;--red-bg:rgba(231,76,60,.12);
+  --ai-bg:rgba(45,125,210,.08);--ai-border:rgba(45,125,210,.28);
+  --sh-sm:0 1px 4px rgba(0,0,0,.55);--sh-md:0 4px 20px rgba(0,0,0,.65);
+}
+[data-theme="light"]{
+  --bg:#e4e9f0;--bg2:#f1f3f7;--bg3:#e8ecf2;
+  --glass:rgba(241,243,247,.88);
+  --fill1:rgba(40,80,140,.13);--fill2:rgba(40,80,140,.08);--fill3:rgba(40,80,140,.04);
+  --t1:#0a1628;--t2:rgba(20,50,100,.74);--t3:rgba(20,50,100,.50);
+  --sep:rgba(40,80,140,.16);
+  --accent:#1a5fa8;--accent-h:#2475c8;--accent-bg:rgba(26,95,168,.10);
+  --gold:#7a5a08;--gold-bg:rgba(138,100,16,.10);
+  --green:#1e8449;--green-bg:rgba(30,132,73,.10);
+  --red:#c0392b;--red-bg:rgba(192,57,43,.10);
+  --ai-bg:rgba(26,95,168,.07);--ai-border:rgba(26,95,168,.22);
+  --sh-sm:0 1px 3px rgba(0,0,0,.09);--sh-md:0 4px 16px rgba(0,0,0,.12);
+}
+body{font-family:var(--font),var(--font-zh);background:var(--bg);color:var(--t1);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;min-height:100vh;transition:background .3s var(--ease),color .3s var(--ease);font-weight:400;line-height:1.55}
 
-:root {
-  --r-xs:   6px;
-  --r-sm:   10px;
-  --r-md:   14px;
-  --r-lg:   18px;
-  --r-xl:   22px;
-  --r-full: 9999px;
-  --ease:   cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --font:   -apple-system, 'SF Pro Text', 'Helvetica Neue', sans-serif;
-  --font-d: -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif;
-}
+/* ── Navbar ── */
+.navbar{position:sticky;top:0;z-index:100;height:52px;backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);background:var(--glass);border-bottom:.5px solid var(--sep);display:flex;align-items:center;justify-content:space-between;padding:0 20px;transition:background .3s var(--ease)}
+.nav-brand{display:flex;align-items:center;gap:10px;min-width:0}
+.nav-icon{width:30px;height:30px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.nav-title{font-family:var(--font-d),var(--font-zh);font-size:15px;font-weight:200;color:var(--t1);letter-spacing:-.3px;white-space:nowrap}
+.nav-title span{color:var(--gold)}
+.nav-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.nav-lang{display:flex;background:var(--fill2);border-radius:var(--r-sm);padding:2px;gap:2px}
+.nav-lang-btn{padding:4px 10px;border-radius:6px;font-family:var(--mono);font-size:11px;font-weight:600;border:none;background:transparent;color:var(--t3);cursor:pointer;transition:all .15s var(--ease);letter-spacing:.06em;text-transform:uppercase}
+.nav-lang-btn.on{background:var(--bg2);color:var(--t1);box-shadow:var(--sh-sm)}
+.theme-toggle{width:46px;height:26px;border-radius:var(--r-full);background:var(--fill1);border:none;cursor:pointer;position:relative;display:flex;align-items:center;padding:2px;transition:background .3s var(--ease);flex-shrink:0;overflow:hidden}
+.knob{width:22px;height:22px;border-radius:var(--r-full);background:var(--bg2);box-shadow:var(--sh-sm);transition:transform .3s var(--spring);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0}
+[data-theme="light"] .knob{transform:translateX(20px)}
 
-/* ── Dark (default) ── */
-[data-theme="dark"] {
-  --bg:         #000000;
-  --bg2:        #1c1c1e;
-  --bg3:        #2c2c2e;
-  --bg4:        #3a3a3c;
-  --glass:      rgba(28,28,30,0.8);
-  --fill1:      rgba(120,120,128,0.36);
-  --fill2:      rgba(120,120,128,0.20);
-  --fill3:      rgba(118,118,128,0.12);
-  --t1:         #ffffff;
-  --t2:         rgba(235,235,245,0.60);
-  --t3:         rgba(235,235,245,0.30);
-  --sep:        rgba(84,84,88,0.55);
-  --accent:     #0a84ff;
-  --accent-h:   #409cff;
-  --accent-bg:  rgba(10,132,255,0.14);
-  --green:      #30d158;
-  --red:        #ff453a;
-  --sh-sm: 0 1px 4px rgba(0,0,0,0.5);
-  --sh-md: 0 4px 20px rgba(0,0,0,0.6);
-  --sh-lg: 0 12px 48px rgba(0,0,0,0.7);
-}
+/* ── Page ── */
+.page{max-width:1080px;margin:0 auto;padding:20px 20px 60px}
+.hero{text-align:center;margin-bottom:20px;padding:16px 0 0}
+.hero-eyebrow{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:7px}
+.hero-title{font-family:var(--font-d),var(--font-zh);font-size:clamp(20px,3.5vw,34px);font-weight:200;letter-spacing:-.5px;line-height:1.1;color:var(--t1);margin-bottom:7px}
+.hero-title span{color:var(--accent)}
+.hero-sub{font-size:13px;color:var(--t2);line-height:1.5;max-width:480px;margin:0 auto 6px}
+.hero-meta{font-size:11px;color:var(--t3)}.hero-meta a{color:var(--accent);text-decoration:none}
+.top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:6px}
+.date-str{font-size:12px;color:var(--t3)}
+.ai-badge{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.08em;padding:3px 10px;border-radius:var(--r-full);background:var(--gold-bg);color:var(--gold);border:.5px solid rgba(201,168,76,.3)}
 
-/* ── Light ── */
-[data-theme="light"] {
-  --bg:         #f2f2f7;
-  --bg2:        #ffffff;
-  --bg3:        #f2f2f7;
-  --bg4:        #e5e5ea;
-  --glass:      rgba(255,255,255,0.78);
-  --fill1:      rgba(120,120,128,0.18);
-  --fill2:      rgba(120,120,128,0.10);
-  --fill3:      rgba(118,118,128,0.06);
-  --t1:         #000000;
-  --t2:         rgba(60,60,67,0.60);
-  --t3:         rgba(60,60,67,0.30);
-  --sep:        rgba(60,60,67,0.14);
-  --accent:     #007aff;
-  --accent-h:   #0062cc;
-  --accent-bg:  rgba(0,122,255,0.08);
-  --green:      #34c759;
-  --red:        #ff3b30;
-  --sh-sm: 0 1px 3px rgba(0,0,0,0.08);
-  --sh-md: 0 4px 16px rgba(0,0,0,0.10);
-  --sh-lg: 0 12px 40px rgba(0,0,0,0.13);
-}
+/* ── Three col ── */
+.three-col{display:grid;grid-template-columns:205px 1px 1fr 1px 196px;gap:0}
+.col{padding:0 16px}.col:first-child{padding-left:0}.col:last-child{padding-right:0}
+.col-div{background:var(--sep)}
+.sec-label{display:flex;align-items:center;gap:6px;margin-bottom:9px}
+.sec-dot{width:5px;height:5px;border-radius:var(--r-full);background:var(--accent);flex-shrink:0}
+.sec-dot.gold{background:var(--gold)}.sec-dot.dim{background:var(--t3)}
+.sec-text{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--t2)}
+.card{background:var(--bg2);border-radius:var(--r-xl);border:.5px solid var(--sep);box-shadow:var(--sh-sm);padding:15px 17px;margin-bottom:10px}
+.ai-card{background:var(--ai-bg);border:1px solid var(--ai-border);border-radius:var(--r-xl);padding:14px 16px;margin-bottom:10px}
+.ai-card-header{display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.chip{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:var(--r-full);background:var(--accent-bg);color:var(--accent);border:.5px solid var(--ai-border)}
+.chip-gold{background:var(--gold-bg);color:var(--gold);border-color:rgba(201,168,76,.3)}
+.pills{display:flex;flex-wrap:wrap;gap:4px}
+.pill{font-size:11px;padding:3px 9px;border-radius:var(--r-full);background:var(--fill2);color:var(--t2);text-decoration:none;border:.5px solid transparent;transition:all .15s var(--ease);white-space:nowrap}
+.pill:hover{background:var(--accent-bg);color:var(--accent);border-color:var(--ai-border)}
+.pill.gld:hover{background:var(--gold-bg);color:var(--gold)}
+.cfg-row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:12px}
+.cfg-group{flex:1;min-width:90px}
+.cfg-label{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);display:block;margin-bottom:6px}
+.depth-seg{display:flex;background:var(--fill2);border-radius:var(--r-sm);padding:2px;gap:2px;min-width:0;overflow:hidden;width:100%}
+.depth-btn{flex:1;min-width:0;padding:6px 4px;border-radius:7px;font-size:12px;font-weight:500;border:none;background:transparent;color:var(--t2);cursor:pointer;transition:all .2s var(--ease);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.depth-btn.on{background:var(--bg2);color:var(--t1);box-shadow:var(--sh-sm);font-weight:600}
+.topic-chips{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px}
+.topic-chip{font-size:11px;padding:4px 9px;border-radius:var(--r-full);border:.5px solid var(--sep);background:transparent;color:var(--t2);cursor:pointer;transition:all .15s var(--ease)}
+.topic-chip:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-bg)}
+.topic-chip.active{border-color:var(--gold);color:var(--gold);background:var(--gold-bg)}
+.topic-input{width:100%;background:var(--fill2);border:.5px solid var(--sep);border-radius:var(--r-md);padding:9px 12px;font-family:var(--font),var(--font-zh);font-size:13px;color:var(--t1);outline:none;transition:all .2s var(--ease)}
+.topic-input::placeholder{color:var(--t3)}
+.topic-input:focus{border-color:var(--accent);background:var(--bg2);box-shadow:0 0 0 3px var(--accent-bg)}
+.gen-btn{width:100%;padding:12px;border-radius:var(--r-md);border:none;background:linear-gradient(135deg,var(--accent),var(--accent-h));color:#fff;font-family:var(--font),var(--font-zh);font-size:14px;font-weight:600;cursor:pointer;transition:all .2s var(--ease);display:flex;align-items:center;justify-content:center;gap:8px}
+.gen-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:var(--sh-md)}
+.gen-btn:disabled{opacity:.38;cursor:not-allowed;transform:none;box-shadow:none}
 
-body {
-  font-family: var(--font);
-  background: var(--bg);
-  color: var(--t1);
-  -webkit-font-smoothing: antialiased;
-  transition: background .3s var(--ease), color .3s var(--ease);
-  min-height: 100vh;
-}
+/* ── Main column ── */
+.headline-xl{font-family:var(--font-d),var(--font-zh);font-size:clamp(17px,2.3vw,24px);font-weight:200;letter-spacing:-.4px;line-height:1.15;color:var(--t1);margin-bottom:6px}
+.byline{font-size:11px;color:var(--t3);margin-bottom:11px}
+.body-text{font-size:13px;line-height:1.65;color:var(--t2)}
+.pullquote{background:var(--gold-bg);border-left:2px solid var(--gold);border-radius:0 var(--r-sm) var(--r-sm) 0;padding:10px 13px;margin:13px 0}
+.pullquote-text{font-size:13px;font-style:italic;line-height:1.5;color:var(--t1)}
+.rule{border:none;border-top:.5px solid var(--sep);margin:11px 0}
 
-/* ─────────────────────────────────────────
-   Navbar
-   ───────────────────────────────────────── */
-.navbar {
-  position: sticky; top: 0; z-index: 100;
-  height: 52px;
-  backdrop-filter: saturate(180%) blur(24px);
-  -webkit-backdrop-filter: saturate(180%) blur(24px);
-  background: var(--glass);
-  border-bottom: 0.5px solid var(--sep);
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 20px;
-  transition: background .3s var(--ease);
-}
+/* ── Progress ── */
+.prog-item{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--t3);padding:4px 0;transition:color .3s}
+.prog-item.active{color:var(--t1)}.prog-item.done{color:var(--green)}
+.prog-dot{width:18px;height:18px;border-radius:var(--r-full);background:var(--fill2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px}
+.prog-item.active .prog-dot{background:var(--accent-bg)}.prog-item.done .prog-dot{background:var(--green-bg)}
 
-.nav-brand { display: flex; align-items: center; gap: 10px; }
-.nav-icon {
-  width: 30px; height: 30px; border-radius: 8px;
-  background: var(--accent);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 15px; flex-shrink: 0;
-}
-.nav-title {
-  font-family: var(--font-d);
-  font-size: 16px; font-weight: 600;
-  color: var(--t1); letter-spacing: -0.2px;
-}
-.nav-sub { font-size: 11px; color: var(--t3); margin-left: 2px; }
+/* ── Output ── */
+.output-wrap{display:none;background:var(--bg2);border-radius:var(--r-xl);border:.5px solid var(--sep);box-shadow:var(--sh-md);overflow:hidden;margin-top:14px}
+.output-bar{background:var(--fill3);padding:9px 15px;border-bottom:.5px solid var(--sep);display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--t3)}
+.out-left{display:flex;align-items:center;gap:7px}
+.live-dot{width:7px;height:7px;border-radius:var(--r-full);background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.32}}
+.out-label{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--t1)}
+.output-body{padding:20px;font-size:13px;line-height:1.78;color:var(--t1)}
+.output-body h1,.output-body h2{font-family:var(--font-d),var(--font-zh);font-weight:200;letter-spacing:-.3px;color:var(--t1);margin:20px 0 7px}
+.output-body h1{font-size:19px}.output-body h2{font-size:15px}
+.output-body h3{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin:16px 0 4px}
+.output-body p{margin-bottom:11px}
+.output-body a{color:var(--accent);text-decoration:none;border-bottom:.5px solid var(--accent);transition:opacity .15s}
+.output-body a:hover{opacity:.65}
+.output-body strong{font-weight:600;color:var(--t1)}
+.output-body hr{border:none;border-top:.5px solid var(--sep);margin:15px 0}
+.output-body ul{padding-left:16px;margin-bottom:11px}
+.output-body li{margin-bottom:4px}
 
-.nav-right { display: flex; align-items: center; gap: 10px; }
+/* ── Right sidebar ── */
+.side-head{font-family:var(--font-d),var(--font-zh);font-size:13px;font-weight:200;color:var(--t1);margin-bottom:4px;margin-top:12px}
+.side-head:first-of-type{margin-top:0}
 
-/* Theme toggle */
-.theme-toggle {
-  width: 50px; height: 28px;
-  border-radius: var(--r-full);
-  background: var(--fill1);
-  border: none; cursor: pointer;
-  position: relative; display: flex; align-items: center; padding: 2px;
-  transition: background .3s var(--ease);
-}
-.knob {
-  width: 24px; height: 24px; border-radius: var(--r-full);
-  background: var(--bg2);
-  box-shadow: var(--sh-sm);
-  transition: transform .3s var(--spring);
-  display: flex; align-items: center; justify-content: center; font-size: 12px;
-}
-[data-theme="light"] .knob { transform: translateX(22px); }
+/* ── Error ── */
+.err-notice{display:none;background:var(--red-bg);border:.5px solid rgba(231,76,60,.3);border-radius:var(--r-md);padding:11px 13px;font-size:13px;color:var(--red);margin-top:9px}
 
-/* Edition badge */
-.edition-badge {
-  font-size: 11px; font-weight: 600; letter-spacing: 0.04em;
-  padding: 3px 10px; border-radius: var(--r-full);
-  background: var(--accent-bg); color: var(--accent);
-  border: 0.5px solid rgba(10,132,255,0.25);
-}
-[data-theme="light"] .edition-badge { border-color: rgba(0,122,255,0.2); }
+/* ── Footer ── */
+.footer{border-top:.5px solid var(--sep);margin-top:36px;padding-top:14px;display:flex;justify-content:space-between;font-size:11px;color:var(--t3);flex-wrap:wrap;gap:5px}
+.footer a{color:var(--t3);text-decoration:none}.footer a:hover{color:var(--accent)}
 
-/* ─────────────────────────────────────────
-   Page shell
-   ───────────────────────────────────────── */
-.page { max-width: 1060px; margin: 0 auto; padding: 24px 20px 80px; }
-
-/* ─────────────────────────────────────────
-   Hero
-   ───────────────────────────────────────── */
-.hero {
-  text-align: center; margin-bottom: 32px;
-  animation: fadeUp .6s var(--ease) both;
+@media(max-width:740px){
+  .three-col{grid-template-columns:1fr}.col-div{display:none}
+  .col{padding:0;margin-bottom:12px}.page{padding:12px 14px 50px}
+  .nav-title{font-size:13px}.nav-lang-btn{padding:3px 7px;font-size:10px}
+  .mob-collapse-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:11px 14px;background:var(--bg2);border-radius:var(--r-lg);border:.5px solid var(--sep);margin-bottom:6px;-webkit-tap-highlight-color:transparent}
+  .mob-collapse-header:active{opacity:.75}
+  .mob-collapse-title{display:flex;align-items:center;gap:6px}
+  .mob-collapse-arrow{font-size:12px;color:var(--t3);transition:transform .25s var(--ease);flex-shrink:0}
+  .mob-collapse-arrow.open{transform:rotate(180deg)}
+  .mob-collapse-body{overflow:hidden;transition:max-height .3s var(--ease),opacity .25s var(--ease);max-height:0;opacity:0}
+  .mob-collapse-body.open{max-height:800px;opacity:1}
+  .mob-collapse-body .pills{padding:10px 14px 12px}
+  .left-col-desktop{display:none}
+  .left-col-mobile{display:block}
 }
-.hero-eyebrow {
-  font-size: 12px; font-weight: 600;
-  letter-spacing: 0.06em; text-transform: uppercase;
-  color: var(--accent); margin-bottom: 10px;
-}
-.hero-title {
-  font-family: var(--font-d);
-  font-size: clamp(26px,5vw,44px);
-  font-weight: 700; letter-spacing: -0.8px; line-height: 1.1;
-  color: var(--t1); margin-bottom: 10px;
-}
-.hero-sub {
-  font-size: 15px; color: var(--t2); line-height: 1.5;
-  max-width: 420px; margin: 0 auto 10px;
-}
-.hero-credit { font-size: 12px; color: var(--t3); }
-.hero-credit a { color: var(--accent); text-decoration: none; }
-
-/* ─────────────────────────────────────────
-   Language + Date bar
-   ───────────────────────────────────────── */
-.top-bar {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 20px; flex-wrap: wrap; gap: 10px;
-}
-.date-str { font-size: 13px; color: var(--t3); }
-
-.lang-seg {
-  display: flex; background: var(--fill2);
-  border-radius: var(--r-sm); padding: 2px; gap: 2px;
-}
-.lang-btn {
-  flex: none; padding: 6px 14px;
-  border-radius: 8px; font-size: 13px; font-weight: 500;
-  border: none; background: transparent; color: var(--t2);
-  cursor: pointer; transition: all .2s var(--ease);
-  display: flex; align-items: center; gap: 5px;
-}
-.lang-btn.on {
-  background: var(--bg2); color: var(--t1);
-  box-shadow: var(--sh-sm); font-weight: 600;
-}
-
-/* ─────────────────────────────────────────
-   Three column layout
-   ───────────────────────────────────────── */
-.three-col {
-  display: grid;
-  grid-template-columns: 220px 1px 1fr 1px 220px;
-  gap: 0;
-}
-.col { padding: 0 20px; }
-.col:first-child { padding-left: 0; }
-.col:last-child  { padding-right: 0; }
-.col-divider { background: var(--sep); }
-
-/* ─────────────────────────────────────────
-   Section labels
-   ───────────────────────────────────────── */
-.section-label {
-  display: flex; align-items: center; gap: 7px;
-  margin-bottom: 12px;
-}
-.section-label-dot {
-  width: 6px; height: 6px; border-radius: var(--r-full);
-  background: var(--accent); flex-shrink: 0;
-}
-.section-label-text {
-  font-size: 11px; font-weight: 700;
-  letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--t2);
-}
-
-/* ─────────────────────────────────────────
-   Cards
-   ───────────────────────────────────────── */
-.card {
-  background: var(--bg2);
-  border-radius: var(--r-xl);
-  border: 0.5px solid var(--sep);
-  box-shadow: var(--sh-sm);
-  padding: 18px 20px;
-  margin-bottom: 12px;
-  transition: background .3s var(--ease), border-color .3s;
-}
-
-/* ─────────────────────────────────────────
-   Pills (builders)
-   ───────────────────────────────────────── */
-.pills { display: flex; flex-wrap: wrap; gap: 5px; }
-.pill {
-  font-size: 12px; font-weight: 500;
-  padding: 4px 11px; border-radius: var(--r-full);
-  background: var(--fill2); color: var(--t2);
-  text-decoration: none; border: 0.5px solid transparent;
-  transition: all .15s var(--ease);
-  white-space: nowrap;
-}
-.pill:hover {
-  background: var(--accent-bg); color: var(--accent);
-  border-color: rgba(10,132,255,0.3);
-}
-
-/* ─────────────────────────────────────────
-   Config controls
-   ───────────────────────────────────────── */
-.cfg-row {
-  display: flex; gap: 14px; flex-wrap: wrap;
-  align-items: flex-end; margin-bottom: 20px;
-}
-.cfg-group { flex: 1; min-width: 120px; }
-.cfg-label {
-  font-size: 11px; font-weight: 600;
-  letter-spacing: 0.06em; text-transform: uppercase;
-  color: var(--t3); display: block; margin-bottom: 7px;
-}
-
-/* Segmented depth control */
-.depth-seg {
-  display: flex; background: var(--fill2);
-  border-radius: var(--r-sm); padding: 2px; gap: 2px;
-  min-width: 0; overflow: hidden; width: 100%;
-}
-.depth-btn {
-  flex: 1; min-width: 0;
-  padding: 7px 4px; border-radius: 8px;
-  font-size: 12px; font-weight: 500;
-  border: none; background: transparent; color: var(--t2);
-  cursor: pointer; transition: all .2s var(--ease); text-align: center;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.depth-btn.on {
-  background: var(--bg2); color: var(--t1);
-  box-shadow: var(--sh-sm); font-weight: 600;
-}
-
-/* Input */
-.topic-input {
-  width: 100%; background: var(--fill2);
-  border: 0.5px solid var(--sep);
-  border-radius: var(--r-md);
-  padding: 10px 14px;
-  font-family: var(--font); font-size: 14px;
-  color: var(--t1); outline: none;
-  transition: all .2s var(--ease);
-}
-.topic-input::placeholder { color: var(--t3); }
-.topic-input:focus {
-  border-color: var(--accent); background: var(--bg2);
-  box-shadow: 0 0 0 3px var(--accent-bg);
-}
-
-/* Generate button */
-.gen-btn {
-  width: 100%; padding: 13px 20px;
-  border-radius: var(--r-md); border: none;
-  background: var(--accent); color: #fff;
-  font-family: var(--font); font-size: 15px; font-weight: 600;
-  cursor: pointer; letter-spacing: -0.1px;
-  transition: all .2s var(--ease);
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-}
-.gen-btn:hover { background: var(--accent-h); transform: translateY(-1px); box-shadow: var(--sh-md); }
-.gen-btn:active { transform: translateY(0); box-shadow: none; }
-.gen-btn:disabled { opacity: .4; cursor: not-allowed; transform: none; box-shadow: none; }
-
-/* ─────────────────────────────────────────
-   Headlines & body
-   ───────────────────────────────────────── */
-.headline-xl {
-  font-family: var(--font-d);
-  font-size: clamp(20px,3vw,30px);
-  font-weight: 700; letter-spacing: -0.5px; line-height: 1.15;
-  color: var(--t1); margin-bottom: 8px;
-}
-.byline { font-size: 12px; color: var(--t3); margin-bottom: 14px; }
-.body-text { font-size: 14px; line-height: 1.65; color: var(--t2); }
-
-/* Pullquote */
-.pullquote {
-  background: var(--accent-bg);
-  border-left: 2px solid var(--accent);
-  border-radius: 0 var(--r-sm) var(--r-sm) 0;
-  padding: 12px 16px; margin: 18px 0;
-}
-.pullquote-text {
-  font-size: 14px; font-style: italic; line-height: 1.5; color: var(--t1);
-}
-
-/* Sidebar headlines */
-.side-head {
-  font-family: var(--font-d);
-  font-size: 15px; font-weight: 600; color: var(--t1);
-  margin-bottom: 5px; margin-top: 14px;
-}
-.side-head:first-of-type { margin-top: 0; }
-
-/* Rule */
-.rule { border: none; border-top: 0.5px solid var(--sep); margin: 16px 0; }
-
-/* ─────────────────────────────────────────
-   Progress steps
-   ───────────────────────────────────────── */
-.prog-item {
-  display: flex; align-items: center; gap: 10px;
-  font-size: 13px; color: var(--t3); padding: 5px 0;
-  transition: color .3s;
-}
-.prog-item.active { color: var(--t1); }
-.prog-item.done   { color: var(--green); }
-.prog-dot {
-  width: 20px; height: 20px; border-radius: var(--r-full);
-  background: var(--fill2); flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center; font-size: 11px;
-  transition: background .2s;
-}
-.prog-item.active .prog-dot { background: var(--accent-bg); }
-.prog-item.done   .prog-dot { background: rgba(48,209,88,.15); }
-
-/* ─────────────────────────────────────────
-   Output
-   ───────────────────────────────────────── */
-.output-wrap {
-  display: none;
-  background: var(--bg2); border-radius: var(--r-xl);
-  border: 0.5px solid var(--sep); box-shadow: var(--sh-md);
-  overflow: hidden; margin-top: 20px;
-  animation: fadeUp .5s var(--ease) both;
-}
-.output-bar {
-  background: var(--fill3); padding: 11px 18px;
-  border-bottom: 0.5px solid var(--sep);
-  display: flex; justify-content: space-between; align-items: center;
-  font-size: 12px; color: var(--t3);
-}
-.output-bar-left { display: flex; align-items: center; gap: 8px; }
-.live-dot {
-  width: 8px; height: 8px; border-radius: var(--r-full);
-  background: var(--green); animation: pulse 2s infinite;
-}
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
-.output-label { font-size: 13px; font-weight: 600; color: var(--t1); }
-.output-body {
-  padding: 24px; font-size: 14px; line-height: 1.78; color: var(--t1);
-}
-.output-body h1,.output-body h2 {
-  font-family: var(--font-d); font-weight: 700; letter-spacing: -0.3px;
-  color: var(--t1); margin: 22px 0 8px;
-}
-.output-body h1 { font-size: 22px; }
-.output-body h2 { font-size: 17px; }
-.output-body h3 {
-  font-size: 11px; font-weight: 700; letter-spacing: .08em;
-  text-transform: uppercase; color: var(--t3); margin: 18px 0 5px;
-}
-.output-body p  { margin-bottom: 12px; }
-.output-body a  {
-  color: var(--accent); text-decoration: none;
-  border-bottom: 0.5px solid var(--accent);
-  transition: opacity .15s;
-}
-.output-body a:hover { opacity: .65; }
-.output-body strong { font-weight: 600; color: var(--t1); }
-.output-body hr { border: none; border-top: 0.5px solid var(--sep); margin: 18px 0; }
-.output-body ul { padding-left: 18px; margin-bottom: 12px; }
-.output-body li { margin-bottom: 5px; }
-
-/* ─────────────────────────────────────────
-   Error
-   ───────────────────────────────────────── */
-.err-notice {
-  display: none;
-  background: rgba(255,69,58,.1); border: 0.5px solid rgba(255,69,58,.3);
-  border-radius: var(--r-md); padding: 12px 16px;
-  font-size: 13px; color: var(--red); margin-top: 10px;
-}
-
-/* ─────────────────────────────────────────
-   Footer
-   ───────────────────────────────────────── */
-.footer {
-  border-top: 0.5px solid var(--sep);
-  margin-top: 48px; padding-top: 20px;
-  display: flex; justify-content: space-between;
-  font-size: 12px; color: var(--t3);
-  flex-wrap: wrap; gap: 6px;
-}
-.footer a { color: var(--t3); text-decoration: none; }
-.footer a:hover { color: var(--accent); }
-
-/* ─────────────────────────────────────────
-   Animations
-   ───────────────────────────────────────── */
-@keyframes fadeUp {
-  from { opacity:0; transform:translateY(14px); }
-  to   { opacity:1; transform:translateY(0); }
-}
-
-/* ─────────────────────────────────────────
-   Responsive
-   ───────────────────────────────────────── */
-@media(max-width:720px){
-  .three-col { grid-template-columns:1fr; }
-  .col-divider { display:none; }
-  .col { padding:0; margin-bottom:24px; }
-  .page { padding:16px 16px 60px; }
+@media(min-width:741px){
+  .left-col-desktop{display:block}
+  .left-col-mobile{display:none}
 }
 </style>
 </head>
 <body data-theme="dark">
 
-<!-- Navbar -->
 <nav class="navbar">
   <div class="nav-brand">
-    <div class="nav-icon">🔭</div>
-    <div>
-      <div class="nav-title">Tong's Daily AI Newsletter</div>
-    </div>
+    <div class="nav-icon">🧠</div>
+    <div class="nav-title">Tongs <span>KI</span> Newsletter</div>
   </div>
   <div class="nav-right">
-    <span class="edition-badge" id="edition-label">中文版</span>
-    <button class="theme-toggle" onclick="toggleTheme()" aria-label="切换主题">
+    <div class="nav-lang">
+      <button class="nav-lang-btn" onclick="setLang(this,'zh')">中文</button>
+      <button class="nav-lang-btn on" onclick="setLang(this,'en')">EN</button>
+      <button class="nav-lang-btn" onclick="setLang(this,'de')">DE</button>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
       <div class="knob" id="knob">🌙</div>
     </button>
   </div>
@@ -480,328 +191,389 @@ body {
 
 <div class="page">
 
-  <!-- Hero -->
   <div class="hero">
-    <div class="hero-eyebrow">AI Builder Intelligence</div>
-    <h1 class="hero-title" id="hero-title">Tongs KI-Newsletter</h1>
-    <p class="hero-sub" id="edition-desc">每日 AI Builder 精选简报 · 过滤噪音，只看信号</p>
-    <div class="hero-credit">
-      灵感来源 <a href="https://github.com/zarazhangrui/follow-builders" target="_blank">zarazhangrui/follow-builders</a> by Zara Zhang
-    </div>
+    <div class="hero-eyebrow" id="hero-eyebrow">Follow Builders, Not Influencers</div>
+    <h1 class="hero-title" id="hero-title">AI &amp; Knowledge<br><span>Intelligence Newsletter</span></h1>
+    <p class="hero-sub" id="hero-sub">Tracking the world's top AI builders, researchers, and thought leaders — with real-time signals from X/Twitter, podcasts, and curated reads.</p>
+    <div class="hero-meta">Powered by <a href="https://anthropic.com" target="_blank">Claude AI</a> · 15 tracked builders · Serper real-time search</div>
   </div>
 
-  <!-- Top bar: date + language -->
   <div class="top-bar">
     <span class="date-str" id="date-line"></span>
-    <div class="lang-seg">
-      <button class="lang-btn on" onclick="setLang(this,'zh')">🇨🇳 中文</button>
-      <button class="lang-btn" onclick="setLang(this,'en')">🇬🇧 English</button>
-      <button class="lang-btn" onclick="setLang(this,'de')">🇩🇪 Deutsch</button>
-    </div>
+    <div class="ai-badge" id="ai-badge">🧠 Builder Tracking · Follow Builders</div>
   </div>
 
-  <!-- Three columns -->
   <div class="three-col">
 
     <!-- LEFT -->
     <div class="col">
-      <div class="section-label">
-        <div class="section-label-dot"></div>
-        <span class="section-label-text" id="lbl-builders">追踪的 Builders</span>
-      </div>
-      <div class="pills">
-        <a class="pill" href="https://x.com/karpathy" target="_blank">Andrej Karpathy</a>
-        <a class="pill" href="https://x.com/sama" target="_blank">Sam Altman</a>
-        <a class="pill" href="https://x.com/AmandaAskell" target="_blank">Amanda Askell</a>
-        <a class="pill" href="https://x.com/alexalbert__" target="_blank">Alex Albert</a>
-        <a class="pill" href="https://x.com/amasad" target="_blank">Amjad Masad</a>
-        <a class="pill" href="https://x.com/rauchg" target="_blank">Guillermo Rauch</a>
-        <a class="pill" href="https://x.com/swyx" target="_blank">Swyx</a>
-        <a class="pill" href="https://x.com/danshipper" target="_blank">Dan Shipper</a>
-        <a class="pill" href="https://x.com/HamelHusain" target="_blank">Hamel Husain</a>
-        <a class="pill" href="https://x.com/garrytan" target="_blank">Garry Tan</a>
-        <a class="pill" href="https://x.com/mattturck" target="_blank">Matt Turck</a>
-        <a class="pill" href="https://x.com/kevinweil" target="_blank">Kevin Weil</a>
-        <a class="pill" href="https://x.com/petergyang" target="_blank">Peter Yang</a>
-        <a class="pill" href="https://x.com/levie" target="_blank">Aaron Levie</a>
-        <a class="pill" href="https://x.com/zarazhangrui" target="_blank">Zara Zhang</a>
-        <a class="pill" href="https://x.com/steipete" target="_blank">Peter Steinberger</a>
-        <a class="pill" href="https://x.com/mckaywrigley" target="_blank">Mckay Wrigley</a>
-        <a class="pill" href="https://x.com/lulumeservey" target="_blank">Lulu Meservey</a>
-        <a class="pill" href="https://x.com/venturetwins" target="_blank">Justine Moore</a>
-        <a class="pill" href="https://x.com/ryolu_" target="_blank">Ryo Lu</a>
-        <a class="pill" href="https://x.com/nikunj" target="_blank">Nikunj Kothari</a>
-        <a class="pill" href="https://x.com/PJaccetturo" target="_blank">PJ Ace</a>
-        <a class="pill" href="https://x.com/adityaag" target="_blank">Aditya Agarwal</a>
-        <a class="pill" href="https://x.com/trq212" target="_blank">Thariq</a>
+
+      <!-- Desktop layout -->
+      <div class="left-col-desktop">
+        <div class="sec-label"><div class="sec-dot gold"></div><span class="sec-text" id="lbl-sites">Tracked Builders</span></div>
+        <div class="pills">
+          <a class="pill" href="https://x.com/karpathy" target="_blank">Andrej Karpathy</a>
+          <a class="pill" href="https://x.com/sama" target="_blank">Sam Altman</a>
+          <a class="pill" href="https://x.com/AmandaAskell" target="_blank">Amanda Askell</a>
+          <a class="pill" href="https://x.com/alexalbert__" target="_blank">Alex Albert</a>
+          <a class="pill" href="https://x.com/amasad" target="_blank">Amjad Masad</a>
+          <a class="pill" href="https://x.com/rauchg" target="_blank">Guillermo Rauch</a>
+          <a class="pill" href="https://x.com/swyx" target="_blank">Swyx</a>
+          <a class="pill" href="https://x.com/danshipper" target="_blank">Dan Shipper</a>
+          <a class="pill" href="https://x.com/HamelHusain" target="_blank">Hamel Husain</a>
+          <a class="pill" href="https://x.com/garrytan" target="_blank">Garry Tan</a>
+          <a class="pill" href="https://x.com/mattturck" target="_blank">Matt Turck</a>
+          <a class="pill" href="https://x.com/kevinweil" target="_blank">Kevin Weil</a>
+          <a class="pill" href="https://x.com/levie" target="_blank">Aaron Levie</a>
+          <a class="pill" href="https://x.com/steipete" target="_blank">Peter Steinberger</a>
+          <a class="pill" href="https://x.com/zarazhangrui" target="_blank">Zara Zhang</a>
+        </div>
+        <div class="rule"></div>
+        <div class="sec-label"><div class="sec-dot"></div><span class="sec-text" id="lbl-blogs">Top Reads</span></div>
+        <div class="pills">
+          <a class="pill" href="https://latent.space" target="_blank">Latent Space Blog</a>
+          <a class="pill" href="https://every.to" target="_blank">Every.to</a>
+          <a class="pill" href="https://www.lennysan.com" target="_blank">Lenny's Newsletter</a>
+          <a class="pill" href="https://newsletter.pragmaticengineer.com" target="_blank">The Pragmatic Engineer</a>
+          <a class="pill" href="https://venturebeat.com/category/ai/" target="_blank">AI News</a>
+          <a class="pill" href="https://simonwillison.net" target="_blank">Simon Willison</a>
+          <a class="pill" href="https://seths.blog" target="_blank">Seth's Blog</a>
+          <a class="pill" href="https://stratechery.com" target="_blank">Stratechery</a>
+          <a class="pill" href="https://ben-evans.com/brainlets" target="_blank">Ben Evans</a>
+          <a class="pill" href="https://yb的前提.substack.com" target="_blank">One Useful Thing</a>
+          <a class="pill" href="https://thesequence.io" target="_blank">The Sequence</a>
+          <a class="pill" href="https://importai.substack.com" target="_blank">Import AI</a>
+        </div>
+        <div class="rule"></div>
+        <div class="sec-label"><div class="sec-dot dim"></div><span class="sec-text" id="lbl-pods">Tracked Podcasts</span></div>
+        <div class="pills">
+          <a class="pill gld" href="https://www.youtube.com/@LatentSpacePod" target="_blank">Latent Space</a>
+          <a class="pill gld" href="https://www.youtube.com/@NoPriorsPodcast" target="_blank">No Priors</a>
+          <a class="pill gld" href="https://www.youtube.com/@LennysPodcast" target="_blank">Lenny's Podcast</a>
+          <a class="pill gld" href="https://www.youtube.com/playlist?list=PLOhHNjZItNnMm5tdW61JpnyxeYH5NDDx8" target="_blank">Training Data</a>
+          <a class="pill gld" href="https://www.youtube.com/@RedpointAI" target="_blank">Unsupervised Learning</a>
+        </div>
       </div>
 
-      <div class="rule"></div>
-      <div class="section-label">
-        <div class="section-label-dot" style="background:var(--green)"></div>
-        <span class="section-label-text" id="lbl-podcasts">播客信源</span>
-      </div>
-      <div class="pills">
-        <a class="pill" href="https://www.youtube.com/@LatentSpacePod" target="_blank">Latent Space</a>
-        <a class="pill" href="https://www.youtube.com/@NoPriorsPodcast" target="_blank">No Priors</a>
-        <a class="pill" href="https://www.youtube.com/@LennysPodcast" target="_blank">Lenny's Podcast</a>
-        <a class="pill" href="https://www.youtube.com/playlist?list=PLOhHNjZItNnMm5tdW61JpnyxeYH5NDDx8" target="_blank">Training Data</a>
-        <a class="pill" href="https://www.youtube.com/@RedpointAI" target="_blank">Unsupervised Learning</a>
-      </div>
-
-      <div class="rule"></div>
-      <div class="section-label">
-        <div class="section-label-dot" style="background:var(--t3)"></div>
-        <span class="section-label-text" id="lbl-phil">设计理念</span>
-      </div>
-      <div class="body-text" style="font-size:13px">
-        <p style="margin-bottom:8px" id="phil-p1">追踪真正在构建产品的人——研究员、创始人、工程师——而非转述信息的网红。</p>
-        <p style="margin-bottom:8px" id="phil-p2">每条信息附有原始信源超链接。Signal vs. Noise 板块主动过滤营销噪音。</p>
-        <p id="phil-p3">原始 Skill 由 <a href="https://github.com/zarazhangrui/follow-builders" target="_blank" style="color:var(--accent);text-decoration:none">Zara Zhang</a> 创作，GitHub 2k+ Stars。</p>
+      <!-- Mobile layout: collapsible sections -->
+      <div class="left-col-mobile">
+        <!-- Tracked Builders -->
+        <div class="mob-collapse-header" onclick="toggleCollapse('mob-sites','arr-sites')">
+          <div class="mob-collapse-title">
+            <div class="sec-dot gold"></div>
+            <span class="sec-text" id="lbl-sites">Tracked Builders</span>
+          </div>
+          <span class="mob-collapse-arrow" id="arr-sites">▼</span>
+        </div>
+        <div class="mob-collapse-body" id="mob-sites">
+          <div class="pills">
+            <a class="pill" href="https://x.com/karpathy" target="_blank">Andrej Karpathy</a>
+            <a class="pill" href="https://x.com/sama" target="_blank">Sam Altman</a>
+            <a class="pill" href="https://x.com/AmandaAskell" target="_blank">Amanda Askell</a>
+            <a class="pill" href="https://x.com/alexalbert__" target="_blank">Alex Albert</a>
+            <a class="pill" href="https://x.com/amasad" target="_blank">Amjad Masad</a>
+            <a class="pill" href="https://x.com/rauchg" target="_blank">Guillermo Rauch</a>
+            <a class="pill" href="https://x.com/swyx" target="_blank">Swyx</a>
+            <a class="pill" href="https://x.com/danshipper" target="_blank">Dan Shipper</a>
+            <a class="pill" href="https://x.com/HamelHusain" target="_blank">Hamel Husain</a>
+            <a class="pill" href="https://x.com/garrytan" target="_blank">Garry Tan</a>
+            <a class="pill" href="https://x.com/mattturck" target="_blank">Matt Turck</a>
+            <a class="pill" href="https://x.com/kevinweil" target="_blank">Kevin Weil</a>
+            <a class="pill" href="https://x.com/levie" target="_blank">Aaron Levie</a>
+            <a class="pill" href="https://x.com/steipete" target="_blank">Peter Steinberger</a>
+            <a class="pill" href="https://x.com/zarazhangrui" target="_blank">Zara Zhang</a>
+          </div>
+        </div>
+        <!-- Top Reads -->
+        <div class="mob-collapse-header" onclick="toggleCollapse('mob-blogs','arr-blogs')">
+          <div class="mob-collapse-title">
+            <div class="sec-dot"></div>
+            <span class="sec-text" id="lbl-blogs">Top Reads</span>
+          </div>
+          <span class="mob-collapse-arrow" id="arr-blogs">▼</span>
+        </div>
+        <div class="mob-collapse-body" id="mob-blogs">
+          <div class="pills">
+            <a class="pill" href="https://latent.space" target="_blank">Latent Space Blog</a>
+            <a class="pill" href="https://every.to" target="_blank">Every.to</a>
+            <a class="pill" href="https://www.lennysan.com" target="_blank">Lenny's Newsletter</a>
+            <a class="pill" href="https://newsletter.pragmaticengineer.com" target="_blank">The Pragmatic Engineer</a>
+            <a class="pill" href="https://venturebeat.com/category/ai/" target="_blank">AI News</a>
+            <a class="pill" href="https://simonwillison.net" target="_blank">Simon Willison</a>
+            <a class="pill" href="https://seths.blog" target="_blank">Seth's Blog</a>
+            <a class="pill" href="https://stratechery.com" target="_blank">Stratechery</a>
+            <a class="pill" href="https://ben-evans.com/brainlets" target="_blank">Ben Evans</a>
+            <a class="pill" href="https://yb的前提.substack.com" target="_blank">One Useful Thing</a>
+            <a class="pill" href="https://thesequence.io" target="_blank">The Sequence</a>
+            <a class="pill" href="https://importai.substack.com" target="_blank">Import AI</a>
+          </div>
+        </div>
+        <!-- Tracked Podcasts -->
+        <div class="mob-collapse-header" onclick="toggleCollapse('mob-pods','arr-pods')">
+          <div class="mob-collapse-title">
+            <div class="sec-dot dim"></div>
+            <span class="sec-text" id="lbl-pods">Tracked Podcasts</span>
+          </div>
+          <span class="mob-collapse-arrow" id="arr-pods">▼</span>
+        </div>
+        <div class="mob-collapse-body" id="mob-pods">
+          <div class="pills">
+            <a class="pill gld" href="https://www.youtube.com/@LatentSpacePod" target="_blank">Latent Space</a>
+            <a class="pill gld" href="https://www.youtube.com/@NoPriorsPodcast" target="_blank">No Priors</a>
+            <a class="pill gld" href="https://www.youtube.com/@LennysPodcast" target="_blank">Lenny's Podcast</a>
+            <a class="pill gld" href="https://www.youtube.com/playlist?list=PLOhHNjZItNnMm5tdW61JpnyxeYH5NDDx8" target="_blank">Training Data</a>
+            <a class="pill gld" href="https://www.youtube.com/@RedpointAI" target="_blank">Unsupervised Learning</a>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="col-divider"></div>
+    <div class="col-div"></div>
 
-    <!-- CENTER -->
+    <!-- MIDDLE -->
     <div class="col">
+
+      <!-- AI Card -->
+      <div class="ai-card">
+        <div class="ai-card-header">
+          <span class="chip" id="ai-chip">🧠 Builder Tracking</span>
+          <span class="chip chip-gold" id="ai-chip2">Follow Builders</span>
+        </div>
+        <div class="body-text" style="font-size:12px" id="ai-desc">Every digest follows the "Follow Builders, Not Influencers" philosophy — tracking real signal from AI practitioners, not hype from influencers.</div>
+      </div>
 
       <!-- Config -->
       <div class="card">
         <div class="cfg-row">
           <div class="cfg-group">
-            <span class="cfg-label" id="lbl-depth">深度</span>
+            <span class="cfg-label" id="lbl-depth">Depth</span>
             <div class="depth-seg">
-              <button class="depth-btn on" onclick="setDepth(this,'标准')" id="d1">标准</button>
-              <button class="depth-btn" onclick="setDepth(this,'深度')" id="d2">深度</button>
-              <button class="depth-btn" onclick="setDepth(this,'精简')" id="d3">精简</button>
+              <button class="depth-btn on" onclick="setDepth(this,'标准')" id="d1">Standard</button>
+              <button class="depth-btn" onclick="setDepth(this,'深度')" id="d2">Deep</button>
+              <button class="depth-btn" onclick="setDepth(this,'精简')" id="d3">Brief</button>
             </div>
           </div>
           <div class="cfg-group" style="flex:2">
-            <span class="cfg-label" id="lbl-topic">聚焦话题</span>
-            <input class="topic-input" id="topic" placeholder="如 agents、MCP、inference…（可选）"/>
+            <span class="cfg-label" id="lbl-topic">Focus Topic</span>
+            <input class="topic-input" id="topic" placeholder="e.g. AI agents, MCP, reasoning models…"/>
           </div>
         </div>
+        <div class="topic-chips" id="topic-chips">
+          <button class="topic-chip" onclick="setTopic(this,'AI Agents')">AI Agents</button>
+          <button class="topic-chip" onclick="setTopic(this,'LLM Research')">LLM Research</button>
+          <button class="topic-chip" onclick="setTopic(this,'AI Engineering')">AI Engineering</button>
+          <button class="topic-chip" onclick="setTopic(this,'Startup & VC')">Startup &amp; VC</button>
+          <button class="topic-chip" onclick="setTopic(this,'Open Source AI')">Open Source AI</button>
+          <button class="topic-chip" onclick="setTopic(this,'AI Safety')">AI Safety</button>
+        </div>
         <button class="gen-btn" id="btn" onclick="go()">
-          <span>🔭</span><span id="btn-text">生成今日 Builder 简报</span>
+          <span>🧠</span><span id="btn-text">Generate KI Newsletter</span>
         </button>
         <div class="err-notice" id="err"></div>
       </div>
 
-      <!-- Hero content -->
-      <div class="section-label" style="margin-top:4px">
-        <div class="section-label-dot"></div>
-        <span class="section-label-text" id="lbl-main">今日头条</span>
-      </div>
-      <div class="headline-xl" id="main-head">每日追踪全球顶级 AI Builders 的第一手观点</div>
-      <div class="byline" id="main-byline">由 Claude AI 实时生成 · 灵感来自 zarazhangrui/follow-builders</div>
-      <div class="body-text" id="main-body">
-        点击上方按钮，Claude 将追踪 Andrej Karpathy、Sam Altman、Anthropic 工程师等 32 位顶级 Builder 的最新动态，结合 Latent Space 等硬核播客，为你生成一份过滤了营销噪音的精华简报。每条信息均附有原始信源超链接。
-      </div>
+      <!-- Intro text -->
+      <div class="sec-label"><div class="sec-dot gold"></div><span class="sec-text" id="lbl-main">Today's Briefing</span></div>
+      <div class="headline-xl" id="main-head">AI Intelligence for Builders &amp; Practitioners</div>
+      <div class="byline" id="main-byline">Generated by Claude AI · 15 tracked builders · Serper real-time search</div>
+      <div class="body-text" id="main-body">Click above to generate today's newsletter. Claude will track signals from Karpathy, Sam Altman, Swyx, Garry Tan, and 11 more tracked builders — with real-time search from Serper, cited sources, and a "Signal vs. Noise" verdict.</div>
 
       <div class="pullquote">
-        <div class="pullquote-text" id="pullquote">"Follow people who build products and have original opinions, not influencers who regurgitate."</div>
+        <div class="pullquote-text" id="pullquote">"Follow the builders — the ones shipping code, not the ones selling courses."</div>
       </div>
 
-      <!-- Progress -->
-      <div id="progress-area" style="display:none;margin-top:12px">
-        <div id="prog-list"></div>
-      </div>
+      <div id="progress-area" style="display:none;margin-top:10px"><div id="prog-list"></div></div>
 
-      <!-- Output -->
       <div class="output-wrap" id="output-area">
         <div class="output-bar">
-          <div class="output-bar-left">
-            <div class="live-dot"></div>
-            <span class="output-label" id="out-label">简报已生成</span>
-          </div>
-          <span id="out-meta">Claude · Follow Builders</span>
+          <div class="out-left"><div class="live-dot"></div><span class="out-label" id="out-label">Newsletter ready</span></div>
+          <span id="out-meta">Claude · KI Newsletter</span>
         </div>
         <div class="output-body" id="output-body"></div>
       </div>
     </div>
 
-    <div class="col-divider"></div>
+    <div class="col-div"></div>
 
     <!-- RIGHT -->
     <div class="col">
-      <div class="section-label">
-        <div class="section-label-dot" style="background:var(--t3)"></div>
-        <span class="section-label-text" id="lbl-what">这是什么</span>
-      </div>
-
-      <div class="side-head" id="side-h1">追踪创造者</div>
-      <div class="body-text" style="font-size:13px;margin-bottom:14px" id="side-b1">
-        AI 领域每天产生大量内容，其中 90% 是对已有观点的转述。这份简报只追踪源头——那些真正在构建、在研究、有第一手判断的人。
-      </div>
-
+      <div class="sec-label"><div class="sec-dot dim"></div><span class="sec-text" id="lbl-what">About</span></div>
+      <div class="side-head" id="side-h1">Follow Builders First</div>
+      <div class="body-text" style="font-size:12px;margin-bottom:10px" id="side-b1">Every newsletter tracks real AI builders — people who ship code, run research labs, and build products. Not influencers selling hype.</div>
       <div class="rule"></div>
-      <div class="side-head" id="side-h2">三语输出</div>
-      <div class="body-text" style="font-size:13px;margin-bottom:14px" id="side-b2">
-        支持中文、英文、德文输出。深奥技术内容转化为地道的目标语言表达，而非机械翻译。
-      </div>
-
+      <div class="side-head" id="side-h2">15 Tracked Builders</div>
+      <div class="body-text" style="font-size:12px;margin-bottom:10px" id="side-b2">Karpathy, Sam Altman, Amanda Askell, Swyx, Garry Tan, and 10 more — each linked to their X profile for real-time signal.</div>
       <div class="rule"></div>
-      <div class="side-head" id="side-h3">Signal vs. Noise</div>
-      <div class="body-text" style="font-size:13px;margin-bottom:14px" id="side-b3">
-        每份简报包含专项板块，明确区分本周的真实进展与炒作噪音，帮助你建立独立判断。
-      </div>
-
+      <div class="side-head" id="side-h3">Real-Time Search</div>
+      <div class="body-text" style="font-size:12px;margin-bottom:10px" id="side-b3">Serper API provides verified, real-time article URLs. Every claim cites a clickable source. No fabricated links.</div>
       <div class="rule"></div>
-      <div class="side-head" id="side-h4">信源超链接</div>
-      <div class="body-text" style="font-size:13px" id="side-b4">
-        简报正文中每位 Builder、每个播客均附有可点击的原始链接，直达第一手内容。
-      </div>
+      <div class="side-head" id="side-h4">Signal vs. Noise</div>
+      <div class="body-text" style="font-size:12px" id="side-b4">Each newsletter ends with an opinionated verdict — what's real signal this week, and what's just hype. Be informed, not overwhelmed.</div>
     </div>
 
-  </div><!-- /.three-col -->
-
-  <div class="footer">
-    <span>Builder 名单策划：<a href="https://github.com/zarazhangrui/follow-builders" target="_blank">zarazhangrui/follow-builders</a> by Zara Zhang</span>
-    <span>由 <a href="https://anthropic.com" target="_blank">Claude AI</a> 实时生成 · MIT License</span>
   </div>
 
-</div><!-- /.page -->
+  <div class="footer">
+    <span>15 builders tracked for AI intelligence</span>
+    <span>Powered by <a href="https://anthropic.com" target="_blank">Claude AI</a> + <a href="https://serper.dev" target="_blank">Serper</a></span>
+  </div>
+
+</div>
 
 <script>
-// ── Date ──
-const today = new Date();
+// ── Init ──
 document.getElementById('date-line').textContent =
-  today.toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+  new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 
-// ── Theme ──
-const saved = localStorage.getItem('fb-theme') || 'dark';
+const saved = localStorage.getItem('ki-theme') || 'dark';
 document.body.setAttribute('data-theme', saved);
 document.getElementById('knob').textContent = saved === 'dark' ? '🌙' : '☀️';
 
 function toggleTheme() {
-  const isDark = document.body.getAttribute('data-theme') === 'dark';
-  const next = isDark ? 'light' : 'dark';
+  const next = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
   document.body.setAttribute('data-theme', next);
   document.getElementById('knob').textContent = next === 'dark' ? '🌙' : '☀️';
-  localStorage.setItem('fb-theme', next);
+  localStorage.setItem('ki-theme', next);
 }
 
-// ── i18n ──
-const T = {
-  zh: {
-    editionLabel:'中文版', utilDesc:'AI Builder Intelligence',
-    editionDesc:'每日 AI Builder 精选简报 · 过滤噪音，只看信号',
-    heroTitle:'Tong 的每日<br>AI 简报',
-    lbl_builders:'追踪的 Builders', lbl_podcasts:'播客信源', lbl_phil:'设计理念',
-    lbl_depth:'深度', lbl_topic:'聚焦话题', lbl_main:'今日头条', lbl_what:'这是什么',
-    mainHead:'每日追踪全球顶级 AI Builders 的第一手观点',
-    mainByline:'由 Claude AI 实时生成 · 灵感来自 zarazhangrui/follow-builders',
-    mainBody:'点击上方按钮，Claude 将追踪 Andrej Karpathy、Sam Altman、Anthropic 工程师等 32 位顶级 Builder 的最新动态，结合 Latent Space 等硬核播客，为你生成一份过滤了营销噪音的精华简报。每条信息均附有原始信源超链接。',
-    placeholder:'如 agents、MCP、inference…（可选）',
-    btn:'生成今日 Builder 简报',
-    pullquote:'"Follow people who build products and have original opinions, not influencers who regurgitate."',
-    d1:'标准', d2:'深度', d3:'精简',
-    phil_p1:'追踪真正在构建产品的人——研究员、创始人、工程师——而非转述信息的网红。',
-    phil_p2:'每条信息附有原始信源超链接。Signal vs. Noise 板块主动过滤营销噪音。',
-    phil_p3:'原始 Skill 由 Zara Zhang 创作，GitHub 2k+ Stars。',
-    side_h1:'追踪创造者', side_b1:'AI 领域每天产生大量内容，其中 90% 是对已有观点的转述。这份简报只追踪源头——那些真正在构建、在研究、有第一手判断的人。',
-    side_h2:'三语输出',   side_b2:'支持中文、英文、德文输出。深奥技术内容转化为地道的目标语言表达，而非机械翻译。',
-    side_h3:'Signal vs. Noise', side_b3:'每份简报包含专项板块，明确区分本周的真实进展与炒作噪音，帮助你建立独立判断。',
-    side_h4:'信源超链接', side_b4:'简报正文中每位 Builder、每个播客均附有可点击的原始链接，直达第一手内容。',
-    generated:'简报已生成',
-    steps:['连接 Claude API…','分析 Builder 动态…','扫描 X/Twitter 洞察…','提取播客精华…','过滤噪音，提炼信号…','生成简报…'],
-  },
-  en: {
-    editionLabel:'English Ed.', utilDesc:'AI Builder Intelligence',
-    editionDesc:'Daily AI builder digest · Filter noise, surface signal',
-    heroTitle:"Tong's Daily<br>AI Newsletter",
-    lbl_builders:'Tracked Builders', lbl_podcasts:'Podcast Sources', lbl_phil:'Philosophy',
-    lbl_depth:'Depth', lbl_topic:'Focus topic', lbl_main:'Lead Story', lbl_what:'About',
-    mainHead:"First-hand insights from the world's top AI builders, daily",
-    mainByline:'Generated by Claude AI · Inspired by zarazhangrui/follow-builders',
-    mainBody:'Click above. Claude will track the latest from Andrej Karpathy, Sam Altman, Anthropic engineers, and 32 curated builders — combined with Latent Space and top podcasts — into a noise-filtered digest. Every insight includes a source link.',
-    placeholder:'e.g. agents, MCP, inference… (optional)',
-    btn:'Generate Builder Digest',
-    pullquote:'"Follow people who build products and have original opinions, not influencers who regurgitate."',
-    d1:'Standard', d2:'Deep Dive', d3:'Brief',
-    phil_p1:'Track people who actually build — researchers, founders, engineers — not influencers who regurgitate.',
-    phil_p2:'Every insight includes a source link. The Signal vs. Noise section actively filters out marketing hype.',
-    phil_p3:'Original Skill by Zara Zhang, 2k+ GitHub stars.',
-    side_h1:'Follow builders',   side_b1:'90% of AI content is recycled takes. This digest tracks the source — those who are actually building, researching, and forming first-hand opinions.',
-    side_h2:'Three languages',   side_b2:'Output in Chinese, English, or German. Technical depth is preserved, not lost in translation.',
-    side_h3:'Signal vs. Noise',  side_b3:'Every digest includes a dedicated section separating real developments from hype, helping you form independent judgment.',
-    side_h4:'Source links',      side_b4:'Every builder and podcast mentioned in the digest includes a clickable link to the original source.',
-    generated:'Digest ready',
-    steps:['Connecting to Claude API…','Analyzing builder activity…','Scanning X/Twitter insights…','Extracting podcast highlights…','Filtering noise, surfacing signal…','Generating digest…'],
-  },
-  de: {
-    editionLabel:'Deutsche Ausgabe', utilDesc:'KI-Builder-Intelligenz',
-    editionDesc:'Tägliche KI-Builder-Zusammenfassung · Rauschen filtern, Signal finden',
-    heroTitle:'Tongs KI-Newsletter',
-    lbl_builders:'Verfolgte Builder', lbl_podcasts:'Podcast-Quellen', lbl_phil:'Philosophie',
-    lbl_depth:'Tiefe', lbl_topic:'Thema', lbl_main:'Aufmacher', lbl_what:'Was ist das',
-    mainHead:'Ersthand-Einblicke von den führenden KI-Entwicklern, täglich',
-    mainByline:'Generiert von Claude AI · Inspiriert von zarazhangrui/follow-builders',
-    mainBody:'Klicken Sie oben. Claude verfolgt die neuesten Beiträge von Andrej Karpathy, Sam Altman und 32 kuratierten Buildern zu einem rauschgefilterten Digest. Jede Erkenntnis enthält einen Quellenlink.',
-    placeholder:'z.B. Agents, MCP, Inferenz… (optional)',
-    btn:'Builder-Digest generieren',
-    pullquote:'"Folge denen, die bauen und eigene Meinungen haben, nicht Influencern, die nur wiederholen."',
-    d1:'Standard', d2:'Tiefgang', d3:'Kurz',
-    phil_p1:'Verfolge Menschen, die wirklich bauen — Forscher, Gründer, Ingenieure — keine Influencer.',
-    phil_p2:'Jede Erkenntnis enthält einen Quellenlink. Signal vs. Rauschen filtert Marketing-Hype heraus.',
-    phil_p3:'Ursprüngliches Skill von Zara Zhang, 2k+ GitHub-Sterne.',
-    side_h1:'Den Machern folgen', side_b1:'90 % der KI-Inhalte sind recycelte Meinungen. Dieser Digest verfolgt die Quelle — jene, die wirklich bauen und forschen.',
-    side_h2:'Drei Sprachen',     side_b2:'Ausgabe auf Chinesisch, Englisch oder Deutsch. Technische Tiefe bleibt erhalten.',
-    side_h3:'Signal vs. Rauschen', side_b3:'Jeder Digest trennt echte Entwicklungen von Hype und hilft Ihnen, ein unabhängiges Urteil zu bilden.',
-    side_h4:'Quellenlinks',      side_b4:'Jeder Builder und Podcast enthält einen klickbaren Link zur ursprünglichen Quelle.',
-    generated:'Digest bereit',
-    steps:['Claude API verbinden…','Builder-Aktivität analysieren…','X/Twitter scannen…','Podcast-Highlights extrahieren…','Rauschen filtern…','Digest generieren…'],
-  }
-};
+// ── State ──
+let lang = 'en', depth = '标准';
 
-let lang = 'zh', depth = '标准';
-
-function setLang(el, l) {
-  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('on'));
-  el.classList.add('on');
-  lang = l;
-  const t = T[l];
-  document.getElementById('edition-label').textContent = t.editionLabel;
-  document.getElementById('edition-desc').textContent = t.editionDesc;
-  document.getElementById('hero-title').innerHTML = t.heroTitle;
-  document.getElementById('lbl-builders').textContent = t.lbl_builders;
-  document.getElementById('lbl-podcasts').textContent = t.lbl_podcasts;
-  document.getElementById('lbl-phil').textContent = t.lbl_phil;
-  document.getElementById('lbl-depth').textContent = t.lbl_depth;
-  document.getElementById('lbl-topic').textContent = t.lbl_topic;
-  document.getElementById('lbl-main').textContent = t.lbl_main;
-  document.getElementById('lbl-what').textContent = t.lbl_what;
-  document.getElementById('main-head').textContent = t.mainHead;
-  document.getElementById('main-byline').textContent = t.mainByline;
-  document.getElementById('main-body').textContent = t.mainBody;
-  document.getElementById('topic').placeholder = t.placeholder;
-  document.getElementById('btn-text').textContent = t.btn;
-  document.getElementById('pullquote').textContent = t.pullquote;
-  document.getElementById('d1').textContent = t.d1;
-  document.getElementById('d2').textContent = t.d2;
-  document.getElementById('d3').textContent = t.d3;
-  document.getElementById('side-h1').textContent = t.side_h1;
-  document.getElementById('side-b1').textContent = t.side_b1;
-  document.getElementById('side-h2').textContent = t.side_h2;
-  document.getElementById('side-b2').textContent = t.side_b2;
-  document.getElementById('side-h3').textContent = t.side_h3;
-  document.getElementById('side-b3').textContent = t.side_b3;
-  document.getElementById('side-h4').textContent = t.side_h4;
-  document.getElementById('side-b4').textContent = t.side_b4;
-  document.getElementById('phil-p1').textContent = t.phil_p1;
-  document.getElementById('phil-p2').textContent = t.phil_p2;
-  document.getElementById('phil-p3').textContent = t.phil_p3;
-  document.documentElement.lang = l;
-  // 切换语言只更新界面文字，不自动重新生成简报（需手动点击生成按钮）
-}
-
+// ── Depth ──
 function setDepth(el, d) {
   document.querySelectorAll('.depth-btn').forEach(b => b.classList.remove('on'));
   el.classList.add('on');
   depth = d;
 }
 
+// ── Topic chips ──
+function setTopic(el, t) {
+  if (el.classList.contains('active')) {
+    el.classList.remove('active');
+    document.getElementById('topic').value = '';
+  } else {
+    document.querySelectorAll('.topic-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('topic').value = t;
+  }
+}
+
+// ── i18n ──
+const i18n = {
+  en: {
+    eyebrow:'Follow Builders, Not Influencers',
+    title:'AI &amp; Knowledge<br><span style="color:var(--accent)">Intelligence Newsletter</span>',
+    sub:"Tracking the world's top AI builders, researchers, and thought leaders — with real-time signals from X/Twitter, podcasts, and curated reads.",
+    aiBadge:'🧠 Builder Tracking · Follow Builders',
+    aiChip:'🧠 Builder Tracking', aiChip2:'Follow Builders',
+    aiDesc:"Every digest follows the \"Follow Builders, Not Influencers\" philosophy — tracking real signal from AI practitioners, not hype from influencers.",
+    lbl_sites:'Tracked Builders', lbl_blogs:'Top Reads', lbl_pods:'Tracked Podcasts',
+    lbl_depth:'Depth', lbl_topic:'Focus Topic',
+    d1:'Standard', d2:'Deep', d3:'Brief',
+    lbl_main:"Today's Briefing",
+    mainHead:'AI Intelligence for Builders &amp; Practitioners',
+    mainByline:'Generated by Claude AI · 15 tracked builders · Serper real-time search',
+    mainBody:"Click above to generate today's newsletter. Claude will track signals from Karpathy, Sam Altman, Swyx, Garry Tan, and 11 more tracked builders — with real-time search from Serper, cited sources, and a \"Signal vs. Noise\" verdict.",
+    placeholder:'e.g. AI agents, MCP, reasoning models…',
+    btn:'Generate KI Newsletter',
+    pullquote:"\"Follow the builders — the ones shipping code, not the ones selling courses.\"",
+    lbl_what:'About',
+    side_h1:'Follow Builders First', side_b1:'Every newsletter tracks real AI builders — people who ship code, run research labs, and build products. Not influencers selling hype.',
+    side_h2:'15 Tracked Builders', side_b2:'Karpathy, Sam Altman, Amanda Askell, Swyx, Garry Tan, and 10 more — each linked to their X profile for real-time signal.',
+    side_h3:'Real-Time Search', side_b3:'Serper API provides verified, real-time article URLs. Every claim cites a clickable source. No fabricated links.',
+    side_h4:'Signal vs. Noise', side_b4:"Each newsletter ends with an opinionated verdict — what's real signal this week, and what's just hype. Be informed, not overwhelmed.",
+    generated:'Newsletter ready',
+    chips:['AI Agents','LLM Research','AI Engineering','Startup & VC','Open Source AI','AI Safety'],
+    steps:['Connecting to Claude API…','Running real-time search (Serper)…','Tracking builder signals…','Analysing AI research & engineering…','Evaluating signal vs. noise…','Writing newsletter…'],
+  },
+  zh: {
+    eyebrow:'追踪建设者，而非网红',
+    title:'AI 与知识<br><span style="color:var(--accent)">智能简报</span>',
+    sub:'追踪全球顶级 AI 建设者、研究者和思想领袖 — 结合 X/Twitter、播客的实时信号与精选阅读。',
+    aiBadge:'🧠 Builder 追踪 · 追踪建设者',
+    aiChip:'🧠 Builder 追踪', aiChip2:'追踪建设者',
+    aiDesc:'每期简报遵循"追踪建设者，而非网红"理念 —— 关注 AI 实践者的真实信号，而非网红炒作。',
+    lbl_sites:'追踪的 Builders', lbl_blogs:'精选阅读', lbl_pods:'追踪的播客',
+    lbl_depth:'深度', lbl_topic:'聚焦话题',
+    d1:'标准', d2:'深度', d3:'精简',
+    lbl_main:'今日简报',
+    mainHead:'面向建设者与实践者的 AI 智能简报',
+    mainByline:'由 Claude AI 生成 · 追踪 15 位 Builder · Serper 实时搜索',
+    mainBody:'点击上方按钮生成今日简报。Claude 将追踪 Karpathy、Sam Altman、Swyx、Garry Tan 以及另外 11 位 Builder 的信号 — 配合 Serper 实时搜索、引用信源，以及"信号与噪音"评判。',
+    placeholder:'如：AI 智能体、MCP、推理模型…',
+    btn:'生成 KI Newsletter',
+    pullquote:'"追踪那些真正写代码的人，而非那些卖课的人。"',
+    lbl_what:'关于本简报',
+    side_h1:'先追踪建设者', side_b1:'每期简报追踪真实的 AI Builder — 真正写代码、运营研究实验室、打造产品的人。不是卖 hype 的网红。',
+    side_h2:'追踪 15 位 Builder', side_b2:'Karpathy、Sam Altman、Amanda Askell、Swyx、Garry Tan，以及另外 10 位 — 每个人的 X 主页均附链接，获取实时信号。',
+    side_h3:'实时搜索', side_b3:'Serper API 提供经核实的实时文章链接。每条观点均附可点击信源，无虚构链接。',
+    side_h4:'信号与噪音', side_b4:'每期简报末尾附鲜明判断 — 本周什么是真实信号，什么只是炒作。让你有信息量，而不被淹没。',
+    generated:'简报已生成',
+    chips:['AI 智能体','LLM 研究','AI 工程','创业与 VC','开源 AI','AI 安全'],
+    steps:['连接 Claude API…','Serper 实时搜索…','追踪 Builder 信号…','分析 AI 研究与工程…','评估信号与噪音…','撰写简报…'],
+  },
+  de: {
+    eyebrow:'Bauern folgen, nicht Influencern',
+    title:'KI &amp; Wissen<br><span style="color:var(--accent)">Intelligence Newsletter</span>',
+    sub:'Verfolgung der weltweit führenden KI-Builder, Forscher und Vordenker — mit Echtzeit-Signalen von X/Twitter, Podcasts und kuratierten Beiträgen.',
+    aiBadge:'🧠 Builder-Tracking · Bauern folgen',
+    aiChip:'🧠 Builder-Tracking', aiChip2:'Bauern folgen',
+    aiDesc:'Jeder Digest folgt der Philosophie „Bauern folgen, nicht Influencern" — echte Signale von KI-Praktikern verfolgen, nicht den Hype von Influencern.',
+    lbl_sites:'Verfolgte Builder', lbl_blogs:'Top-Lektüre', lbl_pods:'Verfolgte Podcasts',
+    lbl_depth:'Tiefe', lbl_topic:'Fokusthema',
+    d1:'Standard', d2:'Tiefgang', d3:'Kurz',
+    lbl_main:'Heutiges Briefing',
+    mainHead:'KI-Intelligenz für Builder &amp; Praktiker',
+    mainByline:'Generiert von Claude AI · 15 verfolgte Builder · Serper Echtzeit-Suche',
+    mainBody:'Klicken Sie oben, um den heutigen Newsletter zu generieren. Claude verfolgt Signale von Karpathy, Sam Altman, Swyx, Garry Tan und 11 weiteren Build — mit Echtzeitsuche von Serper, zitierten Quellen und einem „Signal vs. Rauschen"-Urteil.',
+    placeholder:'z.B. KI-Agenten, MCP, Reasoning-Modelle…',
+    btn:'KI Newsletter generieren',
+    pullquote:'"Folgen Sie den Buildn — die, die Code shippen, nicht die, die Kurse verkaufen."',
+    lbl_what:'Über diesen Newsletter',
+    side_h1:'Bauern zuerst folgen', side_b1:'Jeder Newsletter verfolgt echte KI-Builder — Menschen, die Code shippen, Forschungslabore leiten und Produkte bauen. Nicht Influencer, die Hype verkaufen.',
+    side_h2:'15 verfolgte Builder', side_b2:'Karpathy, Sam Altman, Amanda Askell, Swyx, Garry Tan und 10 weitere — jeder mit X-Profil verlinkt für Echtzeit-Signale.',
+    side_h3:'Echtzeit-Suche', side_b3:'Serper API liefert verifizierte, aktuelle Artikel-URLs. Jede Aussage zitiert eine klickbare Quelle. Keine erfundenen Links.',
+    side_h4:'Signal vs. Rauschen', side_b4:'Jeder Newsletter endet mit einem meinungsstarken Urteil — was diese Woche echtes Signal ist und was nur Hype. Gut informiert, nicht überfordert.',
+    generated:'Newsletter bereit',
+    chips:['KI-Agenten','LLM-Forschung','KI-Engineering','Startup & VC','Open-Source-KI','KI-Sicherheit'],
+    steps:['Claude API verbinden…','Echtzeit-Suche (Serper)…','Builder-Signale verfolgen…','KI-Forschung & Engineering analysieren…','Signal vs. Rauschen bewerten…','Newsletter schreiben…'],
+  },
+};
+
+function setLang(el, l) {
+  document.querySelectorAll('.nav-lang-btn').forEach(b => b.classList.remove('on'));
+  el.classList.add('on');
+  lang = l;
+  applyLang(l);
+}
+
+function applyLang(l) {
+  const t = i18n[l];
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.innerHTML = v; };
+  const setT = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  set('hero-title', t.title);
+  setT('hero-eyebrow', t.eyebrow); setT('hero-sub', t.sub);
+  setT('ai-badge', t.aiBadge); setT('ai-chip', t.aiChip); setT('ai-chip2', t.aiChip2);
+  setT('ai-desc', t.aiDesc);
+  setT('lbl-sites', t.lbl_sites); setT('lbl-blogs', t.lbl_blogs); setT('lbl-pods', t.lbl_pods);
+  setT('lbl-depth', t.lbl_depth); setT('lbl-topic', t.lbl_topic);
+  setT('d1', t.d1); setT('d2', t.d2); setT('d3', t.d3);
+  setT('lbl-main', t.lbl_main);
+  set('main-head', t.mainHead);
+  setT('main-byline', t.mainByline); setT('main-body', t.mainBody);
+  document.getElementById('topic').placeholder = t.placeholder;
+  setT('btn-text', t.btn); setT('pullquote', t.pullquote);
+  setT('lbl-what', t.lbl_what);
+  setT('side-h1', t.side_h1); setT('side-b1', t.side_b1);
+  setT('side-h2', t.side_h2); setT('side-b2', t.side_b2);
+  setT('side-h3', t.side_h3); setT('side-b3', t.side_b3);
+  setT('side-h4', t.side_h4); setT('side-b4', t.side_b4);
+  const chips = document.querySelectorAll('.topic-chip');
+  t.chips.forEach((label, i) => { if (chips[i]) chips[i].textContent = label; });
+  document.documentElement.lang = l === 'zh' ? 'zh' : l === 'de' ? 'de' : 'en';
+}
+
+// ── Markdown ──
 function md(text) {
   return text
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
@@ -820,26 +592,36 @@ function md(text) {
     }).join('\n');
 }
 
+// ── Mobile collapse ──
+function toggleCollapse(bodyId, arrowId) {
+  const body  = document.getElementById(bodyId);
+  const arrow = document.getElementById(arrowId);
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  arrow.classList.toggle('open', !isOpen);
+}
+
+// ── Generate ──
 async function go() {
   const btn = document.getElementById('btn');
   const progArea = document.getElementById('progress-area');
   const progList = document.getElementById('prog-list');
-  const outArea = document.getElementById('output-area');
-  const errEl = document.getElementById('err');
+  const outArea  = document.getElementById('output-area');
+  const errEl    = document.getElementById('err');
   const mainBody = document.getElementById('main-body');
-  const topic = document.getElementById('topic').value.trim();
-  const t = T[lang];
+  const topic    = document.getElementById('topic').value.trim();
+  const t        = i18n[lang];
 
   btn.disabled = true;
   document.getElementById('btn-text').textContent = '…';
   progArea.style.display = 'block';
-  outArea.style.display = 'none';
-  errEl.style.display = 'none';
-  progList.innerHTML = '';
-  mainBody.style.opacity = '0.35';
+  outArea.style.display  = 'none';
+  errEl.style.display    = 'none';
+  progList.innerHTML     = '';
+  mainBody.style.opacity = '0.3';
 
   for (let i = 0; i < t.steps.length; i++) {
-    await new Promise(r => setTimeout(r, i === 0 ? 60 : 580));
+    await new Promise(r => setTimeout(r, i === 0 ? 60 : 620));
     const row = document.createElement('div');
     row.className = 'prog-item active';
     row.innerHTML = `<div class="prog-dot">⏳</div><span>${t.steps[i]}</span>`;
@@ -852,10 +634,10 @@ async function go() {
   }
 
   try {
-    const res = await fetch('/api/generate', {
+    const res  = await fetch('/skill-briefing/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ lang, depth, topic })
+      body: JSON.stringify({ lang, depth, topic }),
     });
     const data = await res.json();
     progList.lastChild.className = 'prog-item done';
@@ -868,10 +650,10 @@ async function go() {
       errEl.style.display = 'block';
     } else {
       document.getElementById('out-label').textContent = t.generated;
-      document.getElementById('out-meta').textContent = `Claude · ${new Date().toLocaleDateString()}`;
+      document.getElementById('out-meta').textContent  = `Claude · ${new Date().toLocaleDateString()}`;
       document.getElementById('output-body').innerHTML = md(data.result);
       outArea.style.display = 'block';
-      outArea.scrollIntoView({ behavior:'smooth', block:'start' });
+      outArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   } catch (e) {
     progArea.style.display = 'none';
@@ -881,7 +663,7 @@ async function go() {
   }
 
   btn.disabled = false;
-  document.getElementById('btn-text').textContent = T[lang].btn;
+  document.getElementById('btn-text').textContent = i18n[lang].btn;
 }
 </script>
 </body>
